@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Blue Line Express — Urban Transport Analysis 2025</title>
+<title>Blue Line Express - Urban Transport Analysis 2026</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   /* ─── RESET & BASE ─── */
@@ -72,22 +72,95 @@
   .sidebar::-webkit-scrollbar-track { background: transparent; }
   .sidebar::-webkit-scrollbar-thumb { background: var(--gray-200); border-radius: 4px; }
 
-  /* ─── SURVEY WIDGET ─── */
+  /* ─── SURVEY WIDGET - COLLAPSIBLE PILL ─── */
+
+  /* Pill tab - always visible, collapses the panel */
+  .survey-pill {
+    position: fixed;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: var(--navy);
+    color: white;
+    width: 32px;
+    padding: 18px 0;
+    border-radius: 8px 0 0 8px;
+    cursor: pointer;
+    box-shadow: -3px 0 16px rgba(13,31,60,0.18);
+    transition: background 0.2s, width 0.2s;
+    user-select: none;
+  }
+  .survey-pill:hover { background: var(--blue); }
+  .survey-pill-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2s infinite;
+    flex-shrink: 0;
+  }
+  .survey-pill-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    color: white;
+    line-height: 1;
+  }
+  .survey-pill-arrow {
+    font-size: 10px;
+    color: var(--blue-light);
+    transition: transform 0.3s;
+  }
+  .survey-pill-arrow.open { transform: rotate(180deg); }
+
+  /* Full panel - slides in from right */
+  .survey-panel {
+    position: fixed;
+    right: 32px; /* sits next to pill */
+    top: 50%;
+    transform: translateY(-50%) translateX(110%);
+    z-index: 999;
+    width: 300px;
+    max-height: 90vh;
+    overflow-y: auto;
+    background: var(--white);
+    border-radius: 8px 0 0 8px;
+    box-shadow: -4px 0 24px rgba(13,31,60,0.16);
+    border: 1px solid var(--gray-200);
+    border-right: none;
+    transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+  }
+  .survey-panel.open {
+    transform: translateY(-50%) translateX(0%);
+  }
+  .survey-panel::-webkit-scrollbar { width: 4px; }
+  .survey-panel::-webkit-scrollbar-thumb { background: var(--gray-200); border-radius: 4px; }
+
+  /* Keep old .survey-widget reference pointing to panel internals */
   .survey-widget {
     background: var(--white);
-    border-radius: 8px;
+    border-radius: 8px 0 0 8px;
     overflow: hidden;
-    box-shadow: 0 2px 16px rgba(13,31,60,0.10);
-    border: 1px solid var(--gray-200);
   }
 
   .survey-header {
     background: var(--navy);
-    padding: 16px 18px;
+    padding: 14px 16px;
     display: flex;
     align-items: center;
     gap: 10px;
+    cursor: pointer;
   }
+  .survey-header:hover { background: var(--blue); }
   .survey-header-dot {
     width: 8px; height: 8px;
     border-radius: 50%;
@@ -99,8 +172,9 @@
     0%,100% { opacity:1; transform:scale(1); }
     50% { opacity:0.5; transform:scale(0.8); }
   }
-  .survey-header-text { color: white; font-weight: 600; font-size: 13px; line-height: 1.3; }
-  .survey-header-sub { color: var(--blue-light); font-size: 10.5px; font-family: 'DM Mono', monospace; letter-spacing: 0.5px; }
+  .survey-header-text { color: white; font-weight: 600; font-size: 13px; line-height: 1.3; flex:1; }
+  .survey-header-sub { color: var(--blue-light); font-size: 10px; font-family: 'DM Mono', monospace; letter-spacing: 0.5px; }
+  .survey-header-close { color: var(--blue-light); font-size: 16px; line-height: 1; padding: 2px 4px; }
 
   .survey-body { padding: 16px; }
 
@@ -549,13 +623,13 @@
     <div class="page cover" id="p-cover">
       <div class="cover-left-bar"></div>
       <div class="cover-content">
-        <div class="cover-tag">Urban Transport Analysis · 2025</div>
+        <div class="cover-tag">Urban Transport Analysis · 2026</div>
         <div class="cover-headline">
           <div class="cover-title">Blue Line<br><span>Express</span></div>
           <div class="cover-subtitle">Feasibility Study for a Skip-Stop Service</div>
           <div class="cover-subtitle" style="font-size:14px;color:var(--gray-400);margin-top:4px;">on the Delhi Metro East–West Corridor</div>
           <div class="cover-corridor">
-            Dwarka Sector 21 ——— Rajiv Chowk ——— Botanical Garden ——— Noida Electronic City<br>
+            Dwarka Sector 21 --- Rajiv Chowk --- Botanical Garden --- Noida Electronic City<br>
             56.11 km · 50 stations · 85 min end-to-end
           </div>
         </div>
@@ -595,28 +669,28 @@
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 36px;">
         <div>
           <div class="toc-section">Overview</div>
-          <div class="toc-item"><span class="toc-item-title">1. Executive Summary</span><span class="toc-item-page">1</span></div>
-          <div class="toc-item"><span class="toc-item-title">2. Blue Line Network Overview</span><span class="toc-item-page">2</span></div>
+          <a href="#p-exec" class="toc-item" style="text-decoration:none;display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-bottom:1px dotted var(--gray-200);cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color=''"><span class="toc-item-title">1. Executive Summary</span><span class="toc-item-page">1</span></a>
+          <a href="#p-network" class="toc-item" style="text-decoration:none;display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-bottom:1px dotted var(--gray-200);cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color=''"><span class="toc-item-title">2. Blue Line Network Overview</span><span class="toc-item-page">2</span></a>
           <div class="toc-section">How the Express Operates</div>
-          <div class="toc-item"><span class="toc-item-title">3a. Core Mechanics &amp; Rider Experience</span><span class="toc-item-page">3a</span></div>
-          <div class="toc-item"><span class="toc-item-title">3b. Signalling, Fleet &amp; Timetable</span><span class="toc-item-page">3b</span></div>
+          <a href="#p-ops-a" class="toc-item" style="text-decoration:none;display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-bottom:1px dotted var(--gray-200);cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color=''"><span class="toc-item-title">3a. Blue "Express" Line Solution</span><span class="toc-item-page">3a</span></a>
+          <a href="#p-ops-b" class="toc-item" style="text-decoration:none;display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-bottom:1px dotted var(--gray-200);cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color=''"><span class="toc-item-title">3b. Signalling, Fleet &amp; Timetable</span><span class="toc-item-page">3b</span></a>
           <div class="toc-section">Analysis</div>
-          <div class="toc-item"><span class="toc-item-title">4. Express Scenarios &amp; Time Savings</span><span class="toc-item-page">4</span></div>
-          <div class="toc-item"><span class="toc-item-title">5. Timetable Integration</span><span class="toc-item-page">5</span></div>
-          <div class="toc-item"><span class="toc-item-title">6. Operational Considerations</span><span class="toc-item-page">5</span></div>
+          <a href="#p-scenarios" class="toc-item" style="text-decoration:none;display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-bottom:1px dotted var(--gray-200);cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color=''"><span class="toc-item-title">4. Express Scenarios &amp; Time Savings</span><span class="toc-item-page">4</span></a>
+          <a href="#p-ops" class="toc-item" style="text-decoration:none;display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-bottom:1px dotted var(--gray-200);cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color=''"><span class="toc-item-title">5. Timetable Integration</span><span class="toc-item-page">5</span></a>
+          <a href="#p-ops" class="toc-item" style="text-decoration:none;display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-bottom:1px dotted var(--gray-200);cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color=''"><span class="toc-item-title">6. Operational Considerations</span><span class="toc-item-page">5</span></a>
         </div>
         <div>
           <div class="toc-section">Financials &amp; Impact</div>
-          <div class="toc-item"><span class="toc-item-title">7. Financial Analysis</span><span class="toc-item-page">6</span></div>
-          <div class="toc-item"><span class="toc-item-title">8. Social &amp; Environmental Benefits</span><span class="toc-item-page">8</span></div>
-          <div class="toc-item"><span class="toc-item-title">9. Equity Impacts &amp; Mitigations</span><span class="toc-item-page">8</span></div>
+          <a href="#p-financial" class="toc-item" style="text-decoration:none;display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-bottom:1px dotted var(--gray-200);cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color=''"><span class="toc-item-title">7. Financial Analysis</span><span class="toc-item-page">6</span></a>
+          <a href="#p-social" class="toc-item" style="text-decoration:none;display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-bottom:1px dotted var(--gray-200);cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color=''"><span class="toc-item-title">8. Social &amp; Environmental Benefits</span><span class="toc-item-page">8</span></a>
+          <a href="#p-social" class="toc-item" style="text-decoration:none;display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-bottom:1px dotted var(--gray-200);cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color=''"><span class="toc-item-title">9. Equity Impacts &amp; Mitigations</span><span class="toc-item-page">8</span></a>
           <div class="toc-section">Global Precedents</div>
-          <div class="toc-item"><span class="toc-item-title">5a. New York &amp; Shanghai</span><span class="toc-item-page">5a</span></div>
-          <div class="toc-item"><span class="toc-item-title">5b. Tokyo &amp; Global Synthesis</span><span class="toc-item-page">5b</span></div>
+          <a href="#p-world-a" class="toc-item" style="text-decoration:none;display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-bottom:1px dotted var(--gray-200);cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color=''"><span class="toc-item-title">5a. New York &amp; Shanghai</span><span class="toc-item-page">5a</span></a>
+          <a href="#p-world-b" class="toc-item" style="text-decoration:none;display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-bottom:1px dotted var(--gray-200);cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color=''"><span class="toc-item-title">5b. Tokyo &amp; Global Synthesis</span><span class="toc-item-page">5b</span></a>
           <div class="toc-section">Implementation</div>
-          <div class="toc-item"><span class="toc-item-title">10. Implementation Roadmap</span><span class="toc-item-page">10</span></div>
-          <div class="toc-item"><span class="toc-item-title">11. Risks &amp; Mitigations</span><span class="toc-item-page">11</span></div>
-          <div class="toc-item"><span class="toc-item-title">12. Conclusion &amp; Recommendations</span><span class="toc-item-page">12</span></div>
+          <a href="#p-roadmap" class="toc-item" style="text-decoration:none;display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-bottom:1px dotted var(--gray-200);cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color=''"><span class="toc-item-title">10. Implementation Roadmap</span><span class="toc-item-page">10</span></a>
+          <a href="#p-risks" class="toc-item" style="text-decoration:none;display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-bottom:1px dotted var(--gray-200);cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color=''"><span class="toc-item-title">11. Risks &amp; Mitigations</span><span class="toc-item-page">11</span></a>
+          <a href="#p-conclusion" class="toc-item" style="text-decoration:none;display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-bottom:1px dotted var(--gray-200);cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color=''"><span class="toc-item-title">12. Conclusion &amp; Recommendations</span><span class="toc-item-page">12</span></a>
         </div>
       </div>
       <div style="margin-top:28px;padding:16px;background:var(--gray-100);border-radius:4px;font-size:12px;color:var(--gray-400);">
@@ -649,9 +723,9 @@
         </div>
       </div>
       <p>The east–west corridor runs 56.11 km from Dwarka Sector 21 to Noida Electronic City across 50 stations. End-to-end journey currently stands at approximately <strong>85 minutes</strong>.</p>
-      <p>This report evaluates a skip-stop <em>Express</em> service on the same tracks, serving only major interchange and high-footfall stations. Three scenarios were modelled — stopping at 30, 25, or 20 stations — with potential time savings of <strong>19 to 25 minutes</strong> (up to 29% faster).</p>
+      <p>This report evaluates a skip-stop <em>Express</em> service on the same tracks, serving only major interchange and high-footfall stations. Three scenarios were modelled - stopping at 30, 25, or 20 stations - with potential time savings of <strong>19 to 25 minutes</strong> (up to 29% faster).</p>
       <p>The proposal requires <strong>no new tracks or platforms</strong>. Key requirements are timetable restructuring and minor CBTC signalling adjustments, estimated at ₹50–150 crore.</p>
-      <div class="callout"><p>Financial modelling at 25% ridership uptake and 8% discount rate yields a 10-year Net Present Value of ₹3,250 million — strongly positive across all tested scenarios.</p></div>
+      <div class="callout"><p>Financial modelling at 25% ridership uptake and 8% discount rate yields a 10-year Net Present Value of ₹3,250 million - strongly positive across all tested scenarios.</p></div>
       <hr/>
       <h3>At a Glance</h3>
       <div class="info-grid info-grid-4">
@@ -709,8 +783,8 @@
       <div class="two-col">
         <div>
           <h3>Route &amp; Corridor</h3>
-          <p><strong>Line 3</strong> runs from Dwarka Sector 21 to Noida Electronic City — 56.114 km across 50 stations.</p>
-          <p><strong>Line 4</strong> branches from Yamuna Bank to Vaishali — 8.511 km across 8 stations.</p>
+          <p><strong>Line 3</strong> runs from Dwarka Sector 21 to Noida Electronic City - 56.114 km across 50 stations.</p>
+          <p><strong>Line 4</strong> branches from Yamuna Bank to Vaishali - 8.511 km across 8 stations.</p>
           <h3>Current Service</h3>
           <p>Operating hours: 6:00 AM to ~11:30 PM<br>
           Peak headway: 2–3 minutes<br>
@@ -724,12 +798,12 @@
             <tbody>
               <tr><td>Rajiv Chowk</td><td>Yellow</td><td>~1.70 lakh</td></tr>
               <tr><td>Botanical Garden</td><td>Magenta</td><td>~1.84 lakh</td></tr>
-              <tr><td>Mandi House</td><td>Violet</td><td>—</td></tr>
-              <tr><td>Kirti Nagar</td><td>Green</td><td>—</td></tr>
-              <tr><td>Janakpuri West</td><td>Magenta</td><td>—</td></tr>
-              <tr><td>Noida Sector 52</td><td>Aqua</td><td>—</td></tr>
-              <tr><td>Dwarka Sec 21</td><td>Airport Exp.</td><td>—</td></tr>
-              <tr><td>Mayur Vihar-I</td><td>Pink</td><td>—</td></tr>
+              <tr><td>Mandi House</td><td>Violet</td><td>-</td></tr>
+              <tr><td>Kirti Nagar</td><td>Green</td><td>-</td></tr>
+              <tr><td>Janakpuri West</td><td>Magenta</td><td>-</td></tr>
+              <tr><td>Noida Sector 52</td><td>Aqua</td><td>-</td></tr>
+              <tr><td>Dwarka Sec 21</td><td>Airport Exp.</td><td>-</td></tr>
+              <tr><td>Mayur Vihar-I</td><td>Pink</td><td>-</td></tr>
             </tbody>
           </table>
         </div>
@@ -746,7 +820,7 @@
       <h2>The Skip-Stop Model</h2>
       <div class="two-col">
         <div>
-          <p>Express trains skip <strong>25–30 intermediate stations</strong>, stopping only at major interchange hubs and high-footfall termini. Skipped stations continue to receive <strong>local service</strong> — riders are not stranded.</p>
+          <p>Express trains skip <strong>25–30 intermediate stations</strong>, stopping only at major interchange hubs and high-footfall termini. Skipped stations continue to receive <strong>local service</strong> - riders are not stranded.</p>
           <p>Each skipped stop saves approximately <strong>~1 minute</strong> (30 sec dwell + acceleration/deceleration loss). Skipping 25 stops yields ~24 minutes of end-to-end saving.</p>
           <div class="note"><strong>Key principle:</strong> Express trains do not overtake locals. They depart after a gap and stay ahead. Timetabling prevents catching the local ahead.</div>
         </div>
@@ -789,25 +863,25 @@
       <p>No passing loops exist. Express trains must be timetabled to run in the gap between two locals.</p>
       <div class="step-row">
         <div class="step-cell dark"><div class="step-cell-top">T + 0 min</div><div class="step-cell-main">Local departs</div><div class="step-cell-sub">All 50 stops, normal headway</div></div>
-        <div class="step-cell blue"><div class="step-cell-top">T + 3 min</div><div class="step-cell-main">Express follows</div><div class="step-cell-sub">3-min gap = safe separation</div></div>
-        <div class="step-cell"><div class="step-cell-top">T + 5 min</div><div class="step-cell-main">Slot dropped</div><div class="step-cell-sub">Next local slot skipped</div></div>
-        <div class="step-cell dark"><div class="step-cell-top">T + 9 min</div><div class="step-cell-main">Next local departs</div><div class="step-cell-sub">Pattern resets</div></div>
+        <div class="step-cell blue"><div class="step-cell-top">T + 7 min</div><div class="step-cell-main">Express follows</div><div class="step-cell-sub">7-min gap = safe separation</div></div>
+        <div class="step-cell"><div class="step-cell-top">T + 9 min</div><div class="step-cell-main">Local departs</div><div class="step-cell-sub">Next express slot created</div></div>
+        <div class="step-cell dark"><div class="step-cell-top">T + 16 min</div><div class="step-cell-main">Next express departs</div><div class="step-cell-sub">Pattern resets</div></div>
       </div>
-      <div class="note"><strong>Why 3 minutes?</strong> At peak headway of 2–3 min, express can never catch the preceding local. CBTC issues speed restriction if gap closes below 90 sec. Hard brake at 60 sec.</div>
+      <div class="note"><strong>Why 7 minutes?</strong> At peak headway of 5-7 min, express can never catch the preceding local. CBTC issues speed restriction if gap closes below 90 sec. Hard brake at 60 sec.</div>
       <hr/>
       <h2>What Riders Experience</h2>
       <div class="three-col">
         <div>
           <h3>Long-haul rider</h3>
-          <p style="font-size:12px;">Boards express at Dwarka Sec 21. Arrives Noida EC in ~61 min instead of 85. No transfer needed. Same platform — waits for the express marker.</p>
+          <p style="font-size:12px;">Boards express at Dwarka Sec 21. Arrives Noida EC in ~61 min instead of 85. No transfer needed. Same platform - waits for the express marker.</p>
         </div>
         <div>
           <h3>Skipped-station rider</h3>
-          <p style="font-size:12px;">Local train still stops at their station. Headway increases slightly — maximum extra wait ~4 min. Guaranteed minimum: 1 local per 3 expresses.</p>
+          <p style="font-size:12px;">Local train still stops at their station. Headway increases slightly - maximum extra wait ~4 min. Guaranteed minimum: 1 local per 3 expresses.</p>
         </div>
         <div>
           <h3>Interchange rider</h3>
-          <p style="font-size:12px;">All major interchange hubs — Rajiv Chowk, Botanical Garden, Kirti Nagar, Janakpuri West — remain express stops. Cross-platform transfers unaffected.</p>
+          <p style="font-size:12px;">All major interchange hubs - Rajiv Chowk, Botanical Garden, Kirti Nagar, Janakpuri West - remain express stops. Cross-platform transfers unaffected.</p>
         </div>
       </div>
       <hr/>
@@ -826,17 +900,17 @@
         <span class="page-header-title">Signalling, Fleet &amp; Timetable Mechanics</span>
         <span class="page-num">p. 3b</span>
       </div>
-      <div class="callout"><p>The Blue Line already runs CBTC — the most advanced in-service signalling technology. Express operation is a software configuration change, not a hardware upgrade.</p></div>
+      <div class="callout"><p>The Blue Line already runs CBTC - the most advanced in-service signalling technology. Express operation is a software configuration change, not a hardware upgrade.</p></div>
       <h2>CBTC and Mixed-Traffic Operation</h2>
       <div class="two-col">
         <div>
-          <p>Communications-Based Train Control (CBTC) enables continuous real-time tracking of every train's position and speed. The system enforces dynamic block separation — meaning it can enforce different headways for express vs. local trains simultaneously.</p>
+          <p>Communications-Based Train Control (CBTC) enables continuous real-time tracking of every train's position and speed. The system enforces dynamic block separation - meaning it can enforce different headways for express vs. local trains simultaneously.</p>
           <h3>What changes</h3>
           <ul class="num-list">
             <li><div class="num">①</div><div><strong>Stop patterns</strong> encoded in train management system per run ID</div></li>
-            <li><div class="num">②</div><div><strong>Platform door zones</strong> mapped — express passes through without triggering door open command</div></li>
-            <li><div class="num">③</div><div><strong>Speed profiles</strong> updated — express permitted higher inter-station speed where safe separation confirmed</div></li>
-            <li><div class="num">④</div><div><strong>Schedule margin</strong> added at Yamuna Bank junction — 2-min recovery buffer</div></li>
+            <li><div class="num">②</div><div><strong>Platform door zones</strong> mapped - express passes through without triggering door open command</div></li>
+            <li><div class="num">③</div><div><strong>Speed profiles</strong> updated - express permitted higher inter-station speed where safe separation confirmed</div></li>
+            <li><div class="num">④</div><div><strong>Schedule margin</strong> added at Yamuna Bank junction - 2-min recovery buffer</div></li>
           </ul>
         </div>
         <div>
@@ -917,7 +991,7 @@
       </div>
       <p>Three skip-stop configurations modelled. All assume max speed ~80 km/h, acceleration 1 m/s², 30-sec dwell per served stop.</p>
       <div class="route-wrap" style="padding:16px 18px;">
-        <div class="route-wrap-label">End-to-end journey time — Dwarka Sec 21 → Noida EC</div>
+        <div class="route-wrap-label">End-to-end journey time - Dwarka Sec 21 → Noida EC</div>
         <svg viewBox="0 0 560 165" xmlns="http://www.w3.org/2000/svg" style="width:100%;">
           <line x1="70" y1="10" x2="70" y2="140" stroke="#D1DCE8" stroke-width="1"/>
           <line x1="70" y1="140" x2="540" y2="140" stroke="#D1DCE8" stroke-width="1"/>
@@ -956,7 +1030,7 @@
       </div>
       <div class="three-col" style="margin-top:14px;">
         <div class="scenario-card">
-          <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray-400);margin-bottom:4px;">Scenario A — Moderate</div>
+          <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray-400);margin-bottom:4px;">Scenario A - Moderate</div>
           <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--navy);">30 <span style="font-size:13px;font-weight:400;">stops</span></div>
           <div style="font-size:11px;color:var(--gray-400);margin-bottom:10px;">Skips 20 of 50</div>
           <table style="font-size:11px;margin:0;">
@@ -980,7 +1054,7 @@
           <div style="margin-top:10px;font-size:11px;color:var(--gray-700);">Best tradeoff. Serves all major interchange hubs. Captures 96% of max saving.</div>
         </div>
         <div class="scenario-card s3">
-          <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);margin-bottom:4px;">Scenario C — Ultra</div>
+          <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);margin-bottom:4px;">Scenario C - Ultra</div>
           <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--navy);">20 <span style="font-size:13px;font-weight:400;">stops</span></div>
           <div style="font-size:11px;color:var(--gray-400);margin-bottom:10px;">Skips 30 of 50</div>
           <table style="font-size:11px;margin:0;">
@@ -1004,11 +1078,11 @@
       <div class="two-col">
         <div>
           <h2>Timetable Integration</h2>
-          <p>Express trains share tracks with locals — no overtaking possible. Safe sequencing requires the express to depart after a sufficient gap.</p>
+          <p>Express trains share tracks with locals - no overtaking possible. Safe sequencing requires the express to depart after a sufficient gap.</p>
           <h3>Recommended Peak Pattern</h3>
           <div style="display:flex;flex-direction:column;gap:5px;margin:10px 0;">
             <div class="arrow-box"><span style="background:var(--navy);color:white;padding:2px 8px;border-radius:2px;font-family:'DM Mono',monospace;font-size:9px;">T+0</span><span class="arrow">→</span><span>Local departs</span></div>
-            <div class="arrow-box"><span style="background:var(--blue-mid);color:white;padding:2px 8px;border-radius:2px;font-family:'DM Mono',monospace;font-size:9px;">T+3</span><span class="arrow">→</span><span><strong>Express follows</strong> — 3 min gap</span></div>
+            <div class="arrow-box"><span style="background:var(--blue-mid);color:white;padding:2px 8px;border-radius:2px;font-family:'DM Mono',monospace;font-size:9px;">T+3</span><span class="arrow">→</span><span><strong>Express follows</strong> - 3 min gap</span></div>
             <div class="arrow-box"><span style="background:var(--gray-400);color:white;padding:2px 8px;border-radius:2px;font-family:'DM Mono',monospace;font-size:9px;">T+5</span><span class="arrow">→</span><span>Next Local slot <em>dropped</em></span></div>
             <div class="arrow-box"><span style="background:var(--navy);color:white;padding:2px 8px;border-radius:2px;font-family:'DM Mono',monospace;font-size:9px;">T+9</span><span class="arrow">→</span><span>Next Local departs</span></div>
           </div>
@@ -1016,11 +1090,11 @@
         <div>
           <h2>Operational Considerations</h2>
           <ul class="num-list">
-            <li><div class="num">①</div><div><strong>Track Conflicts</strong> — No passing loops. CBTC holds trains if spacing closes dangerously.</div></li>
-            <li><div class="num">②</div><div><strong>Headway Impact</strong> — If every 5th train is express, local headway increases. Mitigated by restricting express to off-peak only in Phase 2.</div></li>
-            <li><div class="num">③</div><div><strong>Rolling Stock</strong> — No new trains required. Same 6-car sets. Depot scheduling changes only.</div></li>
-            <li><div class="num">④</div><div><strong>Signalling</strong> — CBTC installed. Mixed-traffic mode needs testing. Padding stops at Yamuna Bank recommended.</div></li>
-            <li><div class="num">⑤</div><div><strong>Passenger Flow</strong> — Skipped stations may see crowding shift to local trains. Load monitoring required post-launch.</div></li>
+            <li><div class="num">①</div><div><strong>Track Conflicts</strong> - No passing loops. CBTC holds trains if spacing closes dangerously.</div></li>
+            <li><div class="num">②</div><div><strong>Headway Impact</strong> - If every 5th train is express, local headway increases. Mitigated by restricting express to off-peak only in Phase 2.</div></li>
+            <li><div class="num">③</div><div><strong>Rolling Stock</strong> - No new trains required. Same 6-car sets. Depot scheduling changes only.</div></li>
+            <li><div class="num">④</div><div><strong>Signalling</strong> - CBTC installed. Mixed-traffic mode needs testing. Padding stops at Yamuna Bank recommended.</div></li>
+            <li><div class="num">⑤</div><div><strong>Passenger Flow</strong> - Skipped stations may see crowding shift to local trains. Load monitoring required post-launch.</div></li>
           </ul>
         </div>
       </div>
@@ -1075,7 +1149,7 @@
       <div class="two-col" style="margin-top:14px;">
         <div>
           <h3>Ridership Baseline</h3>
-          <p>Total annual ridership: 235.8 Cr (2025)<br>Corridor share: 15–30% of total<br>Modelling base: 100,000 long-haul trips/day (Dwarka ↔ Noida)</p>
+          <p>Total annual ridership: 235.8 Cr (2026)<br>Corridor share: 15–30% of total<br>Modelling base: 100,000 long-haul trips/day (Dwarka ↔ Noida)</p>
           <h3>Passenger-Hours Saved</h3>
           <table>
             <thead><tr><th>Uptake</th><th>Annual Riders</th><th>Hours Saved/yr</th></tr></thead>
@@ -1131,13 +1205,12 @@
       <div class="two-col">
         <div>
           <h3>Concern</h3>
-          <p>Short-haul riders at skipped stations (e.g. Uttam Nagar, Preet Vihar) face longer waits or forced transfers.</p>
+          <p>Short-haul riders at skipped stations (e.g. Uttam Nagar, Preet Vihar) might face longer waits.</p>
         </div>
         <div>
           <h3>Mitigations</h3>
           <ul class="num-list">
             <li><div class="num">①</div><div>Min 1 all-stop local per 3 expresses</div></li>
-            <li><div class="num">②</div><div>Feeder buses at skipped stations — est. ₹20–50 M/year</div></li>
             <li><div class="num">③</div><div>Clear platform signage and bilingual PA announcements</div></li>
           </ul>
         </div>
@@ -1155,14 +1228,14 @@
         <div class="city-header">
           <div class="city-flag">🇺🇸</div>
           <div>
-            <div class="city-name">New York City — MTA Subway</div>
+            <div class="city-name">New York City - MTA Subway</div>
             <div class="city-subtitle">Express service since 1904 · A/C/E · 1/2/3 · 4/5/6 · B/D/F/M lines</div>
           </div>
         </div>
         <div class="two-col">
           <div>
             <p style="font-size:12px;">New York's subway is the oldest and most extensive express-local system in the world. Most major lines run on <strong>4-track rights-of-way</strong>: two tracks for express (skipping ~60–70% of stops), two for local. At "express stops," cross-platform transfers take seconds.</p>
-            <p style="font-size:12px;">On the Lexington Avenue Line (4/5/6), the express cuts 42 stops to 20, reducing end-to-end from ~55 min to ~32 min — a <strong>42% time reduction</strong>.</p>
+            <p style="font-size:12px;">On the Lexington Avenue Line (4/5/6), the express cuts 42 stops to 20, reducing end-to-end from ~55 min to ~32 min - a <strong>42% time reduction</strong>.</p>
             <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;">
               <span class="stat-pill">3.7M riders/day</span>
               <span class="stat-pill blue">4-track corridors</span>
@@ -1202,13 +1275,13 @@
         <div class="city-header">
           <div class="city-flag">🇨🇳</div>
           <div>
-            <div class="city-name">Shanghai — Metro Lines 16 &amp; 11</div>
+            <div class="city-name">Shanghai - Metro Lines 16 &amp; 11</div>
             <div class="city-subtitle">Express service since 2013 · 2-track skip-stop · most analogous to Delhi Blue Line</div>
           </div>
         </div>
         <div class="two-col">
           <div>
-            <p style="font-size:12px;"><strong>Line 16</strong> runs on only <strong>2 tracks</strong> — identical infrastructure constraint to Delhi's Blue Line. Express serves 4 of 13 stations, running <em>between</em> local departures exactly as proposed for Delhi.</p>
+            <p style="font-size:12px;"><strong>Line 16</strong> runs on only <strong>2 tracks</strong> - identical infrastructure constraint to Delhi's Blue Line. Express serves 4 of 13 stations, running <em>between</em> local departures exactly as proposed for Delhi.</p>
             <p style="font-size:12px;">Local: ~53 min. Express: ~35 min. <strong>Time saved: 18 min (34%).</strong></p>
             <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;">
               <span class="stat-pill">2-track shared</span>
@@ -1219,7 +1292,7 @@
           </div>
           <div>
             <div class="route-wrap" style="padding:12px;background:white;">
-              <div class="route-wrap-label">Shanghai L16 — 2-track express pattern</div>
+              <div class="route-wrap-label">Shanghai L16 - 2-track express pattern</div>
               <svg viewBox="0 0 220 60" xmlns="http://www.w3.org/2000/svg" style="width:100%;">
                 <line x1="10" y1="30" x2="210" y2="30" stroke="#1A4B8C" stroke-width="3"/>
                 <g fill="#7A93B0">
@@ -1242,7 +1315,7 @@
             </div>
           </div>
         </div>
-        <div class="takeaway-box"><strong>Delhi takeaway:</strong> Shanghai Line 16 is the direct proof of concept. 2-track skip-stop works. Delhi's higher stop-count means shorter intervals between express stops — actually easier to timetable than Line 16.</div>
+        <div class="takeaway-box"><strong>Delhi takeaway:</strong> Shanghai Line 16 is the direct proof of concept. 2-track skip-stop works. Delhi's higher stop-count means shorter intervals between express stops - actually easier to timetable than Line 16.</div>
       </div>
     </div>
 
@@ -1256,14 +1329,14 @@
         <div class="city-header">
           <div class="city-flag">🇯🇵</div>
           <div>
-            <div class="city-name">Tokyo — Keio, Odakyu, Tobu &amp; Tokyo Metro</div>
+            <div class="city-name">Tokyo - Keio, Odakyu, Tobu &amp; Tokyo Metro</div>
             <div class="city-subtitle">Multi-tier express since 1940s · 3–5 service grades on single corridors</div>
           </div>
         </div>
         <div class="two-col">
           <div>
-            <p style="font-size:12px;">Tokyo's private rail operators pioneered <strong>multi-tiered express</strong> — running 3 to 5 different service grades on the same 2-track corridor simultaneously. Keio Line offers: Local → Semi-Express → Express → Limited Express → Special Express, all on the same tracks at peak hours.</p>
-            <p style="font-size:12px;">The <strong>Odakyu Line</strong> uses <em>refuge sidings</em> — short dead-end platforms where a slower train steps aside to let a faster one overtake. Delhi has no sidings, but the proposed 2-in-gap model avoids this need.</p>
+            <p style="font-size:12px;">Tokyo's private rail operators pioneered <strong>multi-tiered express</strong> - running 3 to 5 different service grades on the same 2-track corridor simultaneously. Keio Line offers: Local → Semi-Express → Express → Limited Express → Special Express, all on the same tracks at peak hours.</p>
+            <p style="font-size:12px;">The <strong>Odakyu Line</strong> uses <em>refuge sidings</em> - short dead-end platforms where a slower train steps aside to let a faster one overtake. Delhi has no sidings, but the proposed 2-in-gap model avoids this need.</p>
             <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;">
               <span class="stat-pill">3–5 service grades</span>
               <span class="stat-pill red">Up to 50% faster (ltd. express)</span>
@@ -1273,13 +1346,13 @@
           </div>
           <div>
             <div class="route-wrap" style="padding:12px;background:white;">
-              <div class="route-wrap-label">Service grade pyramid — Keio Line</div>
+              <div class="route-wrap-label">Service grade pyramid - Keio Line</div>
               <svg viewBox="0 0 220 100" xmlns="http://www.w3.org/2000/svg" style="width:100%;">
-                <rect x="5" y="5" width="210" height="14" fill="#7A93B0" rx="2"/><text x="10" y="16" font-family="DM Mono,monospace" font-size="8" fill="white">LOCAL — all 32 stops</text>
-                <rect x="15" y="22" width="180" height="14" fill="#2B6CB0" rx="2"/><text x="20" y="33" font-family="DM Mono,monospace" font-size="8" fill="white">SEMI-EXPRESS — 24 stops</text>
-                <rect x="30" y="39" width="150" height="14" fill="#1A4B8C" rx="2"/><text x="35" y="50" font-family="DM Mono,monospace" font-size="8" fill="white">EXPRESS — 17 stops</text>
-                <rect x="55" y="56" width="110" height="14" fill="#0D1F3C" rx="2"/><text x="60" y="67" font-family="DM Mono,monospace" font-size="8" fill="white">LIMITED EXP — 9 stops</text>
-                <rect x="82" y="73" width="56" height="14" fill="#E63946" rx="2"/><text x="87" y="84" font-family="DM Mono,monospace" font-size="8" fill="white">SPECIAL — 4</text>
+                <rect x="5" y="5" width="210" height="14" fill="#7A93B0" rx="2"/><text x="10" y="16" font-family="DM Mono,monospace" font-size="8" fill="white">LOCAL - all 32 stops</text>
+                <rect x="15" y="22" width="180" height="14" fill="#2B6CB0" rx="2"/><text x="20" y="33" font-family="DM Mono,monospace" font-size="8" fill="white">SEMI-EXPRESS - 24 stops</text>
+                <rect x="30" y="39" width="150" height="14" fill="#1A4B8C" rx="2"/><text x="35" y="50" font-family="DM Mono,monospace" font-size="8" fill="white">EXPRESS - 17 stops</text>
+                <rect x="55" y="56" width="110" height="14" fill="#0D1F3C" rx="2"/><text x="60" y="67" font-family="DM Mono,monospace" font-size="8" fill="white">LIMITED EXP - 9 stops</text>
+                <rect x="82" y="73" width="56" height="14" fill="#E63946" rx="2"/><text x="87" y="84" font-family="DM Mono,monospace" font-size="8" fill="white">SPECIAL - 4</text>
                 <text x="5" y="98" font-family="DM Mono,monospace" font-size="7" fill="#7A93B0">Local: ~75min | Special Exp: ~40min | Shinjuku→Hashimoto 37km</text>
               </svg>
             </div>
@@ -1293,15 +1366,15 @@
           <tr><th>City / System</th><th>Tracks</th><th>Grades</th><th>Time saving</th><th>Since</th><th>Key lesson</th></tr>
         </thead>
         <tbody>
-          <tr><td><strong>New York</strong> — Lex 4/5/6</td><td>4-track</td><td>2</td><td>~42%</td><td>1904</td><td>4-track gives max benefit; cross-platform xfer critical</td></tr>
-          <tr><td><strong>Shanghai</strong> — Line 16</td><td>2-track</td><td>2</td><td>~34%</td><td>2013</td><td>2-track skip-stop works; gap sequencing reliable</td></tr>
-          <tr><td><strong>Tokyo</strong> — Keio/Odakyu</td><td>2–4</td><td>3–5</td><td>Up to 50%</td><td>1948</td><td>Multiple tiers unlock throughput</td></tr>
-          <tr><td><strong>London</strong> — Overground</td><td>2–4</td><td>2</td><td>~20–25%</td><td>2007</td><td>Rebranding drove 170% ridership increase in 5 years</td></tr>
-          <tr class="hl"><td><strong>Delhi (proposed)</strong> — Blue Line</td><td>2-track</td><td>2</td><td>~28%</td><td>2026→</td><td>Closest model: Shanghai L16. Gap sequencing. Zero new tracks.</td></tr>
+          <tr><td><strong>New York</strong> - Lex 4/5/6</td><td>4-track</td><td>2</td><td>~42%</td><td>1904</td><td>4-track gives max benefit; cross-platform xfer critical</td></tr>
+          <tr><td><strong>Shanghai</strong> - Line 16</td><td>2-track</td><td>2</td><td>~34%</td><td>2013</td><td>2-track skip-stop works; gap sequencing reliable</td></tr>
+          <tr><td><strong>Tokyo</strong> - Keio/Odakyu</td><td>2–4</td><td>3–5</td><td>Up to 50%</td><td>1948</td><td>Multiple tiers unlock throughput</td></tr>
+          <tr><td><strong>London</strong> - Overground</td><td>2–4</td><td>2</td><td>~20–25%</td><td>2007</td><td>Rebranding drove 170% ridership increase in 5 years</td></tr>
+          <tr class="hl"><td><strong>Delhi (proposed)</strong> - Blue Line</td><td>2-track</td><td>2</td><td>~28%</td><td>2026→</td><td>Closest model: Shanghai L16. Gap sequencing. Zero new tracks.</td></tr>
         </tbody>
       </table>
       <div class="info-grid info-grid-3" style="margin-top:14px;">
-        <div class="info-box dark"><div class="info-box-title">Shared finding</div><div style="font-size:12px;color:white;margin-top:4px;line-height:1.5;">All cities saw <strong style="color:var(--gold);">ridership growth</strong> after express launch — not just redistribution. Faster service attracts new users from private transport.</div></div>
+        <div class="info-box dark"><div class="info-box-title">Shared finding</div><div style="font-size:12px;color:white;margin-top:4px;line-height:1.5;">All cities saw <strong style="color:var(--gold);">ridership growth</strong> after express launch - not just redistribution. Faster service attracts new users from private transport.</div></div>
         <div class="info-box"><div class="info-box-title">Equity finding</div><div style="font-size:12px;color:var(--gray-700);margin-top:4px;line-height:1.5;">All three report short-haul rider complaints at launch, resolving within 6–12 months as communication improves and feeder services bed in.</div></div>
         <div class="info-box accent"><div class="info-box-title">No system reversed course</div><div style="font-size:12px;color:var(--gray-700);margin-top:4px;line-height:1.5;">Zero major systems have permanently discontinued express services after introduction. The service proves its value.</div></div>
       </div>
@@ -1337,9 +1410,9 @@
           <rect x="89" y="64" width="192" height="16" fill="#0D1F3C" rx="2"/>
           <rect x="281" y="84" width="96" height="16" fill="#2B6CB0" rx="2"/>
           <rect x="377" y="103" width="163" height="12" fill="#E63946" rx="2"/>
-          <text x="91" y="35" font-family="DM Mono,monospace" font-size="8" fill="white">PHASE 1 — Design &amp; Approvals</text>
+          <text x="91" y="35" font-family="DM Mono,monospace" font-size="8" fill="white">PHASE 1 - Design &amp; Approvals</text>
           <text x="283" y="95" font-family="DM Mono,monospace" font-size="8" fill="white">PHASE 2</text>
-          <text x="379" y="112" font-family="DM Mono,monospace" font-size="8" fill="white">PHASE 3 — Full Deployment</text>
+          <text x="379" y="112" font-family="DM Mono,monospace" font-size="8" fill="white">PHASE 3 - Full Deployment</text>
         </svg>
       </div>
       <div class="three-col" style="margin-top:16px;">
@@ -1394,7 +1467,7 @@
           <tr><td>Regulatory approval delays</td><td><span class="risk-low">Low–Med</span></td><td>Early Ministry engagement in Phase 1</td></tr>
           <tr><td>Schedule drift during operations</td><td><span class="risk-med">Medium</span></td><td>Padding stops at Yamuna Bank junction</td></tr>
           <tr><td>Low rider uptake of express</td><td><span class="risk-low">Low</span></td><td>Pre-launch communication campaign</td></tr>
-          <tr><td>Safety — faster trains at platforms</td><td><span class="risk-low">Low</span></td><td>Operator training; platform screen doors</td></tr>
+          <tr><td>Safety - faster trains at platforms</td><td><span class="risk-low">Low</span></td><td>Operator training; platform screen doors</td></tr>
           <tr><td>Negative public reaction</td><td><span class="risk-med">Medium</span></td><td>"Express Trial" branding; feedback channels</td></tr>
         </tbody>
       </table>
@@ -1411,7 +1484,7 @@
       <h2 style="margin-top:20px;">Key Findings</h2>
       <ul class="num-list">
         <li><div class="num">①</div><div>Time savings of <strong>19–25 minutes</strong> achievable with a 25–30 stop express pattern.</div></li>
-        <li><div class="num">②</div><div>No new tracks, platforms, or rolling stock required — existing CBTC can be adapted.</div></li>
+        <li><div class="num">②</div><div>No new tracks, platforms, or rolling stock required - existing CBTC can be adapted.</div></li>
         <li><div class="num">③</div><div>Capital expenditure estimated at <strong>₹50–150 crore</strong> against a 10-year NPV of <strong>₹3,250 million</strong>.</div></li>
         <li><div class="num">④</div><div>~142 tonnes of CO₂/year saved if 10% of riders shift from private cars.</div></li>
         <li><div class="num">⑤</div><div>Equity concerns are real but mitigable through guaranteed local frequency and feeder buses.</div></li>
@@ -1437,7 +1510,7 @@
           <div class="results-header-sub">Live responses from readers of this report</div>
         </div>
         <div id="results-count" style="margin-left:auto;background:var(--accent);color:white;font-family:'Playfair Display',serif;font-size:28px;font-weight:700;padding:10px 20px;border-radius:4px;text-align:center;">
-          <div id="total-count">—</div>
+          <div id="total-count">-</div>
           <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;opacity:0.8;">Total Responses</div>
         </div>
       </div>
@@ -1452,12 +1525,24 @@
         </div>
       </div>
     </div>
-
+<!-- PAGE: ROUTE SIMULATOR -->
+<div class="page inner" id="p-simulator">
+  <div class="page-header">
+    <span class="page-header-title">Interactive Route Simulator</span>
+    <span class="page-num">p. 13</span>
+  </div>
+  <p>Design your own express stop pattern. Select stations below — the simulator calculates journey time, time saved, and visualises your route against the local service.</p>
+  <iframe 
+    src="blue-line-simulator.html" 
+    style="width:100%;height:900px;border:none;border-radius:4px;margin-top:8px;"
+    title="Blue Line Express Route Simulator">
+  </iframe>
+</div>
     <!-- BACK COVER -->
     <div class="back-cover">
       <div class="cover-left-bar"></div>
       <div style="text-align:center;padding:36px;">
-        <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--blue-light);margin-bottom:24px;">Urban Transport Analysis · 2025</div>
+        <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--blue-light);margin-bottom:24px;">Urban Transport Analysis · 2026</div>
         <div style="font-family:'Playfair Display',serif;font-size:36px;font-weight:700;color:var(--white);line-height:1.15;margin-bottom:8px;">Blue "Express" Line</div>
         <div style="font-family:'Playfair Display',serif;font-size:18px;color:var(--blue-light);margin-bottom:32px;">in the Delhi Metro Network</div>
         <div style="width:50px;height:3px;background:var(--accent);margin:0 auto 32px;"></div>
@@ -1468,20 +1553,25 @@
   </div><!-- /report-col -->
 
 
-  <!-- ══════════════════════════════════
-       SIDEBAR
-  ══════════════════════════════════ -->
-  <div class="sidebar">
+</div><!-- /shell -->
 
-    <!-- SURVEY WIDGET -->
-    <div class="survey-widget">
-      <div class="survey-header">
-        <div class="survey-header-dot"></div>
-        <div>
-          <div class="survey-header-text">Reader Survey</div>
-          <div class="survey-header-sub">Share your views · Takes 60 sec</div>
-        </div>
+<!-- ══ FIXED SURVEY PILL + SLIDING PANEL ══ -->
+<div class="survey-pill" id="survey-pill" onclick="toggleSurvey()" title="Take the reader survey">
+  <div class="survey-pill-dot"></div>
+  <div class="survey-pill-label">Survey</div>
+  <div class="survey-pill-arrow" id="pill-arrow">◀</div>
+</div>
+
+<div class="survey-panel" id="survey-panel">
+  <div class="survey-widget">
+    <div class="survey-header" onclick="toggleSurvey()">
+      <div class="survey-header-dot"></div>
+      <div style="flex:1;">
+        <div class="survey-header-text">Reader Survey</div>
+        <div class="survey-header-sub">Share your views · Takes 60 sec</div>
       </div>
+      <div class="survey-header-close">✕</div>
+    </div>
 
       <div class="survey-body" id="survey-body">
 
@@ -1498,17 +1588,17 @@
             Do you commute on the Delhi Metro Blue Line?
           </div>
           <div class="survey-options">
-            <label class="survey-option" onclick="selectOption(1, 'Yes — daily', this)">
-              <div class="survey-option-dot"></div> Yes — daily
+            <label class="survey-option" onclick="selectOption(1, 'Yes - daily', this)">
+              <div class="survey-option-dot"></div> Yes - daily
             </label>
-            <label class="survey-option" onclick="selectOption(1, 'Yes — occasionally', this)">
-              <div class="survey-option-dot"></div> Yes — occasionally
+            <label class="survey-option" onclick="selectOption(1, 'Yes - occasionally', this)">
+              <div class="survey-option-dot"></div> Yes - occasionally
             </label>
-            <label class="survey-option" onclick="selectOption(1, 'No — other line', this)">
-              <div class="survey-option-dot"></div> No — other line
+            <label class="survey-option" onclick="selectOption(1, 'No - other line', this)">
+              <div class="survey-option-dot"></div> No - other line
             </label>
-            <label class="survey-option" onclick="selectOption(1, 'No — non-commuter', this)">
-              <div class="survey-option-dot"></div> No — non-commuter
+            <label class="survey-option" onclick="selectOption(1, 'No - non-commuter', this)">
+              <div class="survey-option-dot"></div> No - non-commuter
             </label>
           </div>
           <div class="survey-nav">
@@ -1532,8 +1622,8 @@
             <label class="survey-option" onclick="selectOption(2, 'Depends on the stops', this)">
               <div class="survey-option-dot"></div> Depends on the stops
             </label>
-            <label class="survey-option" onclick="selectOption(2, 'No — I need all stops', this)">
-              <div class="survey-option-dot"></div> No — I need all stops
+            <label class="survey-option" onclick="selectOption(2, 'No - I need all stops', this)">
+              <div class="survey-option-dot"></div> No - I need all stops
             </label>
           </div>
           <div class="survey-nav">
@@ -1559,7 +1649,7 @@
               <div class="survey-option-dot"></div> Longer local wait times
             </label>
             <label class="survey-option" onclick="selectOption(3, 'No major concern', this)">
-              <div class="survey-option-dot"></div> No major concern — sounds great
+              <div class="survey-option-dot"></div> No major concern - sounds great
             </label>
           </div>
           <div class="survey-nav">
@@ -1568,11 +1658,11 @@
           </div>
         </div>
 
-        <!-- Step 4 — Open question -->
+        <!-- Step 4 - Open question -->
         <div class="survey-step" id="step-4">
           <div class="survey-q">
             <span class="survey-q-num">Question 04</span>
-            Your take on the Blue Line Express — anything the report missed?
+            Your take on the Blue Line Express - anything the report missed?
           </div>
           <input type="text" class="survey-input" id="respondent-name" placeholder="Your name (optional)" maxlength="60"/>
           <textarea class="survey-textarea" id="open-opinion" placeholder="Share your opinion, concerns, or ideas... (optional)" maxlength="500"></textarea>
@@ -1599,40 +1689,35 @@
       </div>
 
     </div><!-- /survey-widget -->
+  </div><!-- /survey-panel -->
 
-    <!-- TOC WIDGET -->
-    <div class="toc-widget">
-      <div class="toc-widget-header">In This Report</div>
-      <div class="toc-widget-body">
-        <a class="toc-link" href="#p-exec">Executive Summary</a>
-        <a class="toc-link" href="#p-network">Network Overview</a>
-        <a class="toc-link" href="#p-ops-a">How It Operates (Core)</a>
-        <a class="toc-link" href="#p-ops-b">Signalling &amp; Fleet</a>
-        <a class="toc-link" href="#p-scenarios">Express Scenarios</a>
-        <a class="toc-link" href="#p-financial">Financial Analysis</a>
-        <a class="toc-link" href="#p-social">Social &amp; Equity</a>
-        <a class="toc-link" href="#p-world-a">NYC &amp; Shanghai</a>
-        <a class="toc-link" href="#p-world-b">Tokyo &amp; Synthesis</a>
-        <a class="toc-link" href="#p-roadmap">Roadmap</a>
-        <a class="toc-link" href="#p-risks">Risks</a>
-        <a class="toc-link" href="#p-conclusion">Conclusion</a>
-        <a class="toc-link" href="#survey-results-section" style="color:var(--accent);border-left-color:var(--accent);">📊 Live Survey Results</a>
-      </div>
-    </div>
 
-  </div><!-- /sidebar -->
-
-</div><!-- /shell -->
 
 
 <script>
+// ─── SURVEY TOGGLE ───
+function toggleSurvey() {
+  const panel = document.getElementById('survey-panel');
+  const arrow = document.getElementById('pill-arrow');
+  const isOpen = panel.classList.contains('open');
+  if (isOpen) {
+    panel.classList.remove('open');
+    arrow.textContent = '◀';
+    arrow.classList.remove('open');
+  } else {
+    panel.classList.add('open');
+    arrow.textContent = '▶';
+    arrow.classList.add('open');
+  }
+}
+
 // ─── SURVEY STATE ───
 const answers = { q1: null, q2: null, q3: null, name: '', opinion: '' };
 
 // ─── GOOGLE APPS SCRIPT ENDPOINT ───
 // IMPORTANT: Replace this URL with your deployed Google Apps Script web app URL
 // See SETUP.md for instructions on how to create this
-const APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby7WTA1K7umfOGUsQF1cDUlS-Y7vrC0idjSm9zG_apKFunpEH_4QUpFCNiHCZAtJn_Kpw/exec';
 
 function selectOption(step, value, el) {
   // Clear other selections in this step
@@ -1667,15 +1752,15 @@ async function submitSurvey() {
 
   const payload = {
     timestamp: new Date().toISOString(),
-    commuter: answers.q1 || '—',
-    would_use: answers.q2 || '—',
-    concern: answers.q3 || '—',
+    commuter: answers.q1 || '-',
+    would_use: answers.q2 || '-',
+    concern: answers.q3 || '-',
     name: answers.name || 'Anonymous',
     opinion: answers.opinion || ''
   };
 
   try {
-    if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== 'YOUR_APPS_SCRIPT_URL_HERE') {
+    if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== 'https://script.google.com/macros/s/AKfycby7WTA1K7umfOGUsQF1cDUlS-Y7vrC0idjSm9zG_apKFunpEH_4QUpFCNiHCZAtJn_Kpw/exec') {
       await fetch(APPS_SCRIPT_URL, {
         method: 'POST',
         mode: 'no-cors',
@@ -1706,7 +1791,7 @@ async function loadResults() {
 
   // Try to get from Apps Script (if configured)
   let all = [...local];
-  if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== 'YOUR_APPS_SCRIPT_URL_HERE') {
+  if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== 'https://script.google.com/macros/s/AKfycby7WTA1K7umfOGUsQF1cDUlS-Y7vrC0idjSm9zG_apKFunpEH_4QUpFCNiHCZAtJn_Kpw/exec') {
     try {
       const res = await fetch(APPS_SCRIPT_URL + '?action=get', { method: 'GET' });
       const data = await res.json();
@@ -1729,7 +1814,7 @@ function renderResults(responses) {
   document.getElementById('total-count').textContent = total;
 
   if (total === 0) {
-    document.getElementById('results-content').innerHTML = '<div class="results-loading" style="padding:30px;">No responses yet — be the first to take the survey!</div>';
+    document.getElementById('results-content').innerHTML = '<div class="results-loading" style="padding:30px;">No responses yet - be the first to take the survey!</div>';
     return;
   }
 
@@ -1779,7 +1864,7 @@ function renderResults(responses) {
 function tally(responses, field) {
   const counts = {};
   responses.forEach(r => {
-    const v = r[field] || '—';
+    const v = r[field] || '-';
     counts[v] = (counts[v] || 0) + 1;
   });
   return Object.entries(counts).sort((a,b) => b[1]-a[1]);
