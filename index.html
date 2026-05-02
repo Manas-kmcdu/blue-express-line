@@ -48,7 +48,7 @@
     border-left-color: var(--green);
   }
   .survey-card-header {
-    background: linear-gradient(90deg, var(--navy) 0%, #162d52 100%);
+    background: linear-gradient(90deg, var(--navy) 0%, #FFFFFF 100%);
     padding: 10px 18px;
     display: flex;
     align-items: center;
@@ -422,7 +422,7 @@
       <div class="survey-card-progress" id="sq-progress-1">0 / 10 answered</div>
     </div>
     <div class="survey-card-body">
-      <div class="survey-card-q">How often do you travel end-to-end (or near end-to-end) on the Blue Line?</div>
+      <div class="survey-card-q">How often do you travel end-to-end (Dwarka-Noida or Noida-Dwarka) on the Blue Line?</div>
       <div class="survey-opts">
         <label class="survey-opt" onclick="answer(1,'Daily commute',this)"><div class="survey-opt-dot"></div>Daily commute</label>
         <label class="survey-opt" onclick="answer(1,'Few times a week',this)"><div class="survey-opt-dot"></div>Few times a week</label>
@@ -492,13 +492,12 @@
       <div class="survey-card-progress" id="sq-progress-2">0 / 10 answered</div>
     </div>
     <div class="survey-card-body">
-      <div class="survey-card-q">Which best describes your nearest Blue Line station?</div>
+      <div class="survey-card-q">What is your primary purpose of travel on the Blue Line?</div>
       <div class="survey-opts">
-        <label class="survey-opt" onclick="answer(2,'Major interchange hub',this)"><div class="survey-opt-dot"></div>Major interchange hub (Rajiv Chowk, Botanical Garden etc.)</label>
-        <label class="survey-opt" onclick="answer(2,'Busy mid-corridor station',this)"><div class="survey-opt-dot"></div>Busy mid-corridor station</label>
-        <label class="survey-opt" onclick="answer(2,'Quiet intermediate stop',this)"><div class="survey-opt-dot"></div>Quiet intermediate stop (likely to be skipped)</label>
-        <label class="survey-opt" onclick="answer(2,'Terminal / end station',this)"><div class="survey-opt-dot"></div>Terminal / end station (Dwarka 21 or Noida EC)</label>
-        <label class="survey-opt" onclick="answer(2,'Not on Blue Line',this)"><div class="survey-opt-dot"></div>Not on Blue Line</label>
+        <label class="survey-opt" onclick="answer(2,'College',this)"><div class="survey-opt-dot"></div>College</label>
+        <label class="survey-opt" onclick="answer(2,'Work',this)"><div class="survey-opt-dot"></div>Work</label>
+        <label class="survey-opt" onclick="answer(2,'Personal/Leisure',this)"><div class="survey-opt-dot"></div>Personal/Leisure</label>
+        <label class="survey-opt" onclick="answer(2,'Other',this)"><div class="survey-opt-dot"></div>Other</label>
       </div>
       <div class="survey-answered-tag">✓ Response recorded</div>
     </div>
@@ -561,22 +560,21 @@
 
   <!-- SURVEY Q3 -->
   <div class="survey-card" id="sq-3" data-q="3">
-    <div class="survey-card-header">
-      <div class="survey-card-dot"></div>
-      <div class="survey-card-label">Reader Survey · Question 3 of 10</div>
-      <div class="survey-card-progress" id="sq-progress-3">0 / 10 answered</div>
-    </div>
-    <div class="survey-card-body">
-      <div class="survey-card-q">For you personally, what matters more in a metro service?</div>
-      <div class="survey-opts">
-        <label class="survey-opt" onclick="answer(3,'Speed - save time even if I wait longer',this)"><div class="survey-opt-dot"></div>Speed - save time even if I wait a bit longer</label>
-        <label class="survey-opt" onclick="answer(3,'Frequency - shorter waits, even if slower',this)"><div class="survey-opt-dot"></div>Frequency - shorter waits, even if the ride is slower</label>
-        <label class="survey-opt" onclick="answer(3,'Both equally',this)"><div class="survey-opt-dot"></div>Both equally</label>
-        <label class="survey-opt" onclick="answer(3,'Reliability over everything',this)"><div class="survey-opt-dot"></div>Reliability over everything</label>
-      </div>
-      <div class="survey-answered-tag">✓ Response recorded</div>
-    </div>
+  <div class="survey-card-header">
+    <div class="survey-card-dot"></div>
+    <div class="survey-card-label">Reader Survey · Question 3 of 10</div>
+    <div class="survey-card-progress" id="sq-progress-8">0 / 10 answered</div>
   </div>
+  <div class="survey-card-body">
+    <div class="survey-card-q">Would you prefer a Blue Express Line that skips some stations and reduces travel time (~20-25 minutes)?</div>
+    <div class="survey-opts">
+      <label class="survey-opt" onclick="answer(3,'Yes',this)"><div class="survey-opt-dot"></div>Yes</label>
+      <label class="survey-opt" onclick="answer(3,'No',this)"><div class="survey-opt-dot"></div>No</label>
+      <label class="survey-opt" onclick="answer(3,'Not sure',this)"><div class="survey-opt-dot"></div>Not sure</label>
+    </div>
+    <div class="survey-answered-tag">✓ Response recorded</div>
+  </div>
+</div>
 
   <!-- SIGNALLING 3b -->
   <div class="page inner" id="p-ops-b">
@@ -617,22 +615,22 @@
 
   <!-- SURVEY Q4 -->
   <div class="survey-card" id="sq-4" data-q="4">
-    <div class="survey-card-header">
-      <div class="survey-card-dot"></div>
-      <div class="survey-card-label">Reader Survey · Question 4 of 10</div>
-      <div class="survey-card-progress" id="sq-progress-4">0 / 10 answered</div>
-    </div>
-    <div class="survey-card-body">
-      <div class="survey-card-q">CBTC makes express service a software-only change - no new tracks needed. Does this increase your confidence in the proposal?</div>
-      <div class="survey-opts">
-        <label class="survey-opt" onclick="answer(4,'Yes - much more confident',this)"><div class="survey-opt-dot"></div>Yes - much more confident</label>
-        <label class="survey-opt" onclick="answer(4,'Somewhat - still want a pilot first',this)"><div class="survey-opt-dot"></div>Somewhat - still want a pilot first</label>
-        <label class="survey-opt" onclick="answer(4,'Neutral - execution matters more than tech',this)"><div class="survey-opt-dot"></div>Neutral - execution matters more than tech</label>
-        <label class="survey-opt" onclick="answer(4,'No - software can still fail',this)"><div class="survey-opt-dot"></div>No - software can still fail</label>
-      </div>
-      <div class="survey-answered-tag">✓ Response recorded</div>
-    </div>
+  <div class="survey-card-header">
+    <div class="survey-card-dot"></div>
+    <div class="survey-card-label">Reader Survey · Question 4 of 10</div>
+    <div class="survey-card-progress" id="sq-progress-5">0 / 10 answered</div>
   </div>
+  <div class="survey-card-body">
+    <div class="survey-card-q">How often do you experience overcrowding on the Blue Line?</div>
+    <div class="survey-opts">
+      <label class="survey-opt" onclick="answer(4,'Rarely',this)"><div class="survey-opt-dot"></div>Rarely</label>
+      <label class="survey-opt" onclick="answer(4,'Sometimes',this)"><div class="survey-opt-dot"></div>Sometimes</label>
+      <label class="survey-opt" onclick="answer(4,'Often',this)"><div class="survey-opt-dot"></div>Often</label>
+      <label class="survey-opt" onclick="answer(4,'Almost always',this)"><div class="survey-opt-dot"></div>Almost always</label>
+    </div>
+    <div class="survey-answered-tag">✓ Response recorded</div>
+  </div>
+</div>
 
   <!-- SCENARIOS -->
   <div class="page inner" id="p-scenarios">
@@ -690,10 +688,10 @@
     <div class="survey-card-body">
       <div class="survey-card-q">If you were designing the express service, which scenario would you choose?</div>
       <div class="survey-opts">
-        <label class="survey-opt" onclick="answer(5,'Scenario A - 30 stops, safer',this)"><div class="survey-opt-dot"></div>Scenario A - 30 stops (conservative, less disruption)</label>
-        <label class="survey-opt" onclick="answer(5,'Scenario B - 25 stops, recommended',this)"><div class="survey-opt-dot"></div>Scenario B - 25 stops (recommended, best balance)</label>
-        <label class="survey-opt" onclick="answer(5,'Scenario C - 20 stops, maximum speed',this)"><div class="survey-opt-dot"></div>Scenario C - 20 stops (maximum time saving)</label>
-        <label class="survey-opt" onclick="answer(5,'No express - keep all-stop service',this)"><div class="survey-opt-dot"></div>No express - keep the all-stop service as-is</label>
+        <label class="survey-opt" onclick="answer(5,'Scenario A - 30 stops',this)"><div class="survey-opt-dot"></div>Scenario A - 30 stops (conservative, less disruption)</label>
+        <label class="survey-opt" onclick="answer(5,'Scenario B - 25 stops, stops at every alternate station',this)"><div class="survey-opt-dot"></div>Scenario B - 25 stops, stops at every alternate station</label>
+        <label class="survey-opt" onclick="answer(5,'Scenario C - 20 stops, skips more stations',this)"><div class="survey-opt-dot"></div>Scenario C - 20 stops, skips more stations</label>
+        <label class="survey-opt" onclick="answer(5,'Scenario D - 12-15 stops, stops at only major stations',this)"><div class="survey-opt-dot"></div>Scenario D - 12-15 stops, stops at only major stations</label>
       </div>
       <div class="survey-answered-tag">✓ Response recorded</div>
     </div>
@@ -705,13 +703,13 @@
     <div class="two-col">
       <div>
         <h2>Timetable Integration</h2>
-        <p>Express trains share tracks with locals - no overtaking possible. Safe sequencing requires the express to depart after a sufficient gap.</p>
+        <p>Express trains share tracks with locals - no overtaking infrastructure. Safe sequencing requires the express to depart after a sufficient gap.</p>
         <h3>Recommended Peak Pattern</h3>
         <div style="display:flex;flex-direction:column;gap:5px;margin:10px 0;">
-          <div class="arrow-box"><span style="background:var(--navy);color:white;padding:2px 8px;border-radius:2px;font-family:'DM Mono',monospace;font-size:9px;">T+0</span><span class="arrow">→</span><span>Local departs</span></div>
-          <div class="arrow-box"><span style="background:var(--blue-mid);color:white;padding:2px 8px;border-radius:2px;font-family:'DM Mono',monospace;font-size:9px;">T+3</span><span class="arrow">→</span><span><strong>Express follows</strong> - 3 min gap</span></div>
-          <div class="arrow-box"><span style="background:var(--gray-400);color:white;padding:2px 8px;border-radius:2px;font-family:'DM Mono',monospace;font-size:9px;">T+5</span><span class="arrow">→</span><span>Next Local slot <em>dropped</em></span></div>
-          <div class="arrow-box"><span style="background:var(--navy);color:white;padding:2px 8px;border-radius:2px;font-family:'DM Mono',monospace;font-size:9px;">T+9</span><span class="arrow">→</span><span>Next Local departs</span></div>
+          <div class="arrow-box"><span style="background:var(--navy);color:white;padding:2px 8px;border-radius:2px;font-family:'DM Mono',monospace;font-size:9px;">T+0</span><span class="arrow">→</span><span>Express departs</span></div>
+          <div class="arrow-box"><span style="background:var(--blue-mid);color:white;padding:2px 8px;border-radius:2px;font-family:'DM Mono',monospace;font-size:9px;">T+3</span><span class="arrow">→</span><span><strong>Local follows</strong> - 3 min gap</span></div>
+          <div class="arrow-box"><span style="background:var(--gray-400);color:white;padding:2px 8px;border-radius:2px;font-family:'DM Mono',monospace;font-size:9px;">T+6</span><span class="arrow">→</span><span>Next Local slot <em>dropped</em></span></div>
+          <div class="arrow-box"><span style="background:var(--navy);color:white;padding:2px 8px;border-radius:2px;font-family:'DM Mono',monospace;font-size:9px;">T+15</span><span class="arrow">→</span><span>Next Express departs</span></div>
         </div>
       </div>
       <div>
@@ -762,21 +760,22 @@
 
   <!-- SURVEY Q6 -->
   <div class="survey-card" id="sq-6" data-q="6">
-    <div class="survey-card-header">
-      <div class="survey-card-dot"></div>
-      <div class="survey-card-label">Reader Survey · Question 6 of 10</div>
-      <div class="survey-card-progress" id="sq-progress-6">0 / 10 answered</div>
+  <div class="survey-card-header">
+    <div class="survey-card-dot"></div>
+    <div class="survey-card-label">Reader Survey · Question 6 of 10</div>
+    <div class="survey-card-progress" id="sq-progress-6">0 / 10 answered</div>
+  </div>
+  <div class="survey-card-body">
+    <div class="survey-card-q">What is your biggest issue while traveling on the Blue Line?</div>
+    <div class="survey-opts">
+      <label class="survey-opt" onclick="answer(6,'Travel time is too long',this)"><div class="survey-opt-dot"></div>Travel time is too long</label>
+      <label class="survey-opt" onclick="answer(6,'Overcrowding',this)"><div class="survey-opt-dot"></div>Overcrowding</label>
+      <label class="survey-opt" onclick="answer(6,'Frequent stops slowing journey',this)"><div class="survey-opt-dot"></div>Frequent stops slowing journey</label>
+      <label class="survey-opt" onclick="answer(6,'Delays',this)"><div class="survey-opt-dot"></div>Delays</label>
+      <label class="survey-opt" onclick="answer(6,'Interchange congestion',this)"><div class="survey-opt-dot"></div>Interchange congestion</label>
     </div>
-    <div class="survey-card-body">
-      <div class="survey-card-q">₹50–150 Cr capex for a 10-year NPV of ₹3,250M - does the financial case seem compelling?</div>
-      <div class="survey-opts">
-        <label class="survey-opt" onclick="answer(6,'Yes - strong return, low risk',this)"><div class="survey-opt-dot"></div>Yes - strong return, low risk</label>
-        <label class="survey-opt" onclick="answer(6,'Seems reasonable but more scrutiny needed',this)"><div class="survey-opt-dot"></div>Seems reasonable but more scrutiny needed</label>
-        <label class="survey-opt" onclick="answer(6,'Sceptical - these projections are often optimistic',this)"><div class="survey-opt-dot"></div>Sceptical - these projections are often optimistic</label>
-        <label class="survey-opt" onclick="answer(6,'Not qualified to judge',this)"><div class="survey-opt-dot"></div>Not qualified to judge</label>
-      </div>
-      <div class="survey-answered-tag">✓ Response recorded</div>
-    </div>
+    <div class="survey-answered-tag">✓ Response recorded</div>
+  </div>
   </div>
 
   <!-- SOCIAL & EQUITY -->
@@ -883,11 +882,10 @@
       <div class="survey-card-progress" id="sq-progress-8">0 / 10 answered</div>
     </div>
     <div class="survey-card-body">
-      <div class="survey-card-q">After reading about NYC and Shanghai - does global precedent make you more or less confident this will work for Delhi?</div>
+      <div class="survey-card-q">After reading about NYC and Shanghai - does global precedent make you confident this will work for Delhi?</div>
       <div class="survey-opts">
         <label class="survey-opt" onclick="answer(8,'Much more confident',this)"><div class="survey-opt-dot"></div>Much more confident - proven globally</label>
         <label class="survey-opt" onclick="answer(8,'Somewhat more confident',this)"><div class="survey-opt-dot"></div>Somewhat more confident</label>
-        <label class="survey-opt" onclick="answer(8,'Delhi context is different',this)"><div class="survey-opt-dot"></div>Delhi context is too different to compare directly</label>
         <label class="survey-opt" onclick="answer(8,'No change in view',this)"><div class="survey-opt-dot"></div>No change - I had my own view already</label>
       </div>
       <div class="survey-answered-tag">✓ Response recorded</div>
@@ -1037,15 +1035,26 @@
     <div class="survey-card-body">
       <div class="survey-card-q">Having read the full report - what's your overall verdict on the Blue Line Express proposal?</div>
       <div class="survey-opts">
-        <label class="survey-opt" onclick="answer(10,'Strong yes - launch it',this)"><div class="survey-opt-dot"></div>Strong yes - launch it</label>
-        <label class="survey-opt" onclick="answer(10,'Yes, but pilot first',this)"><div class="survey-opt-dot"></div>Yes, but run the off-peak pilot first</label>
-        <label class="survey-opt" onclick="answer(10,'Cautious - need more data',this)"><div class="survey-opt-dot"></div>Cautious - need more data before committing</label>
+        <label class="survey-opt" onclick="answer(10,'Strong - launch it',this)"><div class="survey-opt-dot"></div>Strong yes - launch it</label>
+        <label class="survey-opt" onclick="answer(10,'Yes, why does this not exist?',this)"><div class="survey-opt-dot"></div>Yes, why does this not exist?</label>
         <label class="survey-opt" onclick="answer(10,'Not convinced',this)"><div class="survey-opt-dot"></div>Not convinced - too many unresolved issues</label>
-        <label class="survey-opt" onclick="answer(10,'Against - keep all-stop service',this)"><div class="survey-opt-dot"></div>Against - keep the all-stop service</label>
+        <label class="survey-opt" onclick="answer(10,'Against - keep normal all-stop service',this)"><div class="survey-opt-dot"></div>Against - keep normal all-stop service</label>
       </div>
       <div class="survey-answered-tag">✓ Response recorded</div>
     </div>
   </div>
+  <div style="text-align:center;margin:40px 0;">
+  <button onclick="submitSurvey()" style="
+    padding:12px 24px;
+    background:#162D52;
+    color:#fff;
+    border:none;
+    border-radius:6px;
+    font-family:'DM Mono',monospace;
+    cursor:pointer;">
+    Submit Responses
+  </button>
+</div>
 
   <!-- SUMMARY CARD -->
   <div class="summary-card" id="summary-card">
@@ -1078,7 +1087,8 @@
 // ─── STATE ───
 const TOTAL_Q = 10;
 const answers = {}; // { 1: 'answer text', ... }
-
+const WEB_APP_URL = ";https://script.google.com/macros/s/AKfycbyyf-iPnwuPqRnmiV3v6qcOFab4mz565YgbVmgWqPYH-ibkBGjYq6mg-HhiJcWeWceLXA/exec";
+  
 const questions = [
   "How often do you travel end-to-end on the Blue Line?",
   "Which best describes your nearest Blue Line station?",
@@ -1161,6 +1171,25 @@ function updateSummary() {
 
 // Init summary on load
 updateSummary();
+function submitSurvey() {
+  fetch(WEB_APP_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      answers: answers   // 🔥 send full object
+    }),
+    headers: {
+      "Content-Type": "application/json"
+    }
+  })
+  .then(res => res.json())
+  .then(() => {
+    alert("Response submitted successfully.");
+  })
+  .catch(() => {
+    alert("Error submitting response.");
+  });
+}
+  
 </script>
 </body>
 </html>
