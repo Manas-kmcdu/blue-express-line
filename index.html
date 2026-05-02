@@ -1,0 +1,1825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blue Line Express — Urban Transport Analysis 2025</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* ─── RESET & BASE ─── */
+  :root {
+    --navy: #0D1F3C;
+    --blue: #1A4B8C;
+    --blue-mid: #2B6CB0;
+    --blue-light: #4A9FD4;
+    --accent: #E63946;
+    --gold: #F4A261;
+    --bg: #F0F4F9;
+    --white: #FFFFFF;
+    --gray-100: #EEF2F7;
+    --gray-200: #D1DCE8;
+    --gray-400: #7A93B0;
+    --gray-700: #334155;
+    --text: #1A2B3C;
+    --green: #27AE60;
+    --sidebar-w: 300px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 13.5px;
+    line-height: 1.6;
+  }
+
+  /* ─── LAYOUT SHELL ─── */
+  .shell {
+    display: flex;
+    align-items: flex-start;
+    max-width: 1340px;
+    margin: 0 auto;
+    padding: 20px 16px;
+    gap: 24px;
+    position: relative;
+  }
+
+  /* ─── REPORT COLUMN ─── */
+  .report-col {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  /* ─── SIDEBAR ─── */
+  .sidebar {
+    width: var(--sidebar-w);
+    flex-shrink: 0;
+    position: sticky;
+    top: 20px;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .sidebar::-webkit-scrollbar { width: 4px; }
+  .sidebar::-webkit-scrollbar-track { background: transparent; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--gray-200); border-radius: 4px; }
+
+  /* ─── SURVEY WIDGET ─── */
+  .survey-widget {
+    background: var(--white);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 16px rgba(13,31,60,0.10);
+    border: 1px solid var(--gray-200);
+  }
+
+  .survey-header {
+    background: var(--navy);
+    padding: 16px 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .survey-header-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity:1; transform:scale(1); }
+    50% { opacity:0.5; transform:scale(0.8); }
+  }
+  .survey-header-text { color: white; font-weight: 600; font-size: 13px; line-height: 1.3; }
+  .survey-header-sub { color: var(--blue-light); font-size: 10.5px; font-family: 'DM Mono', monospace; letter-spacing: 0.5px; }
+
+  .survey-body { padding: 16px; }
+
+  /* Progress bar */
+  .survey-progress { margin-bottom: 14px; }
+  .survey-progress-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 1px; text-transform: uppercase; color: var(--gray-400); margin-bottom: 5px; }
+  .survey-progress-bar { height: 3px; background: var(--gray-200); border-radius: 2px; overflow: hidden; }
+  .survey-progress-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.4s ease; }
+
+  /* Steps */
+  .survey-step { display: none; }
+  .survey-step.active { display: block; }
+
+  .survey-q {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 10px;
+    line-height: 1.45;
+  }
+  .survey-q-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .survey-options { display: flex; flex-direction: column; gap: 6px; }
+  .survey-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    background: var(--gray-100);
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1.5px solid transparent;
+    transition: all 0.15s ease;
+    font-size: 12px;
+    color: var(--gray-700);
+  }
+  .survey-option:hover { border-color: var(--blue-mid); background: #E8F4FD; }
+  .survey-option.selected { border-color: var(--accent); background: #FEE8EA; color: var(--navy); font-weight: 600; }
+  .survey-option input[type="radio"] { display: none; }
+  .survey-option-dot {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    border: 2px solid var(--gray-200);
+    flex-shrink: 0;
+    transition: all 0.15s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .survey-option.selected .survey-option-dot { border-color: var(--accent); background: var(--accent); }
+  .survey-option.selected .survey-option-dot::after { content: ''; width: 5px; height: 5px; border-radius: 50%; background: white; }
+
+  /* Open text */
+  .survey-textarea {
+    width: 100%;
+    height: 90px;
+    padding: 10px 12px;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 4px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    color: var(--navy);
+    resize: none;
+    transition: border-color 0.15s;
+    background: var(--gray-100);
+  }
+  .survey-textarea:focus { outline: none; border-color: var(--blue-mid); background: white; }
+  .survey-textarea::placeholder { color: var(--gray-400); }
+
+  /* Name field */
+  .survey-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 4px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    color: var(--navy);
+    background: var(--gray-100);
+    margin-bottom: 8px;
+    transition: border-color 0.15s;
+  }
+  .survey-input:focus { outline: none; border-color: var(--blue-mid); background: white; }
+
+  /* Nav buttons */
+  .survey-nav { display: flex; gap: 8px; margin-top: 12px; }
+  .btn-back {
+    padding: 7px 14px;
+    background: var(--gray-100);
+    border: 1px solid var(--gray-200);
+    border-radius: 4px;
+    font-size: 11.5px;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--gray-700);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-back:hover { background: var(--gray-200); }
+  .btn-next {
+    flex: 1;
+    padding: 8px 14px;
+    background: var(--navy);
+    border: none;
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    color: white;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-next:hover { background: var(--blue); }
+  .btn-next:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-submit {
+    flex: 1;
+    padding: 8px 14px;
+    background: var(--accent);
+    border: none;
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    color: white;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-submit:hover { background: #c82333; }
+  .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* Thank you state */
+  .survey-thanks {
+    display: none;
+    text-align: center;
+    padding: 20px 10px;
+  }
+  .survey-thanks.show { display: block; }
+  .survey-thanks-icon { font-size: 36px; margin-bottom: 10px; }
+  .survey-thanks-title { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+  .survey-thanks-sub { font-size: 11.5px; color: var(--gray-400); }
+
+  /* Submitting spinner */
+  .survey-submitting {
+    display: none;
+    text-align: center;
+    padding: 20px;
+    font-size: 12px;
+    color: var(--gray-400);
+  }
+  .survey-submitting.show { display: block; }
+  .spinner {
+    width: 24px; height: 24px;
+    border: 3px solid var(--gray-200);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 10px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ─── TOC WIDGET ─── */
+  .toc-widget {
+    background: var(--white);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(13,31,60,0.07);
+    border: 1px solid var(--gray-200);
+  }
+  .toc-widget-header {
+    padding: 12px 16px;
+    background: var(--gray-100);
+    border-bottom: 1px solid var(--gray-200);
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--gray-400);
+  }
+  .toc-widget-body { padding: 10px 0; }
+  .toc-link {
+    display: block;
+    padding: 5px 16px;
+    font-size: 11.5px;
+    color: var(--gray-700);
+    text-decoration: none;
+    transition: all 0.12s;
+    border-left: 2px solid transparent;
+  }
+  .toc-link:hover { color: var(--navy); background: var(--gray-100); border-left-color: var(--accent); }
+
+  /* ─── PAGES ─── */
+  .page {
+    width: 100%;
+    background: var(--white);
+    border-radius: 6px;
+    box-shadow: 0 2px 12px rgba(13,31,60,0.08);
+    overflow: hidden;
+    scroll-margin-top: 20px;
+  }
+
+  /* Cover */
+  .cover {
+    background: var(--navy);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 600px;
+    position: relative;
+  }
+  .cover-left-bar { position: absolute; left: 0; top: 0; bottom: 0; width: 8px; background: var(--accent); }
+  .cover-content { padding: 50px 46px 36px 56px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+  .cover-tag { font-family: 'DM Mono', monospace; font-size: 10.5px; letter-spacing: 3px; text-transform: uppercase; color: var(--blue-light); margin-bottom: 48px; }
+  .cover-headline { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .cover-title { font-family: 'Playfair Display', serif; font-size: 52px; font-weight: 900; color: var(--white); line-height: 1.05; margin-bottom: 10px; }
+  .cover-title span { color: var(--accent); }
+  .cover-subtitle { font-size: 17px; font-weight: 300; color: var(--blue-light); margin-bottom: 6px; letter-spacing: 0.5px; }
+  .cover-corridor { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--gray-400); margin-top: 24px; border-left: 3px solid var(--accent); padding-left: 14px; }
+  .kpi-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: rgba(255,255,255,0.08); border-top: 1px solid rgba(255,255,255,0.1); }
+  .kpi-item { padding: 20px 18px; background: rgba(255,255,255,0.03); }
+  .kpi-num { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: var(--white); line-height: 1; }
+  .kpi-num span { color: var(--accent); font-size: 16px; }
+  .kpi-label { font-size: 9.5px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gray-400); margin-top: 4px; }
+  .cover-footer { background: rgba(0,0,0,0.25); padding: 14px 56px; display: flex; justify-content: space-between; align-items: center; }
+  .cover-footer-text { font-size: 10.5px; color: var(--gray-400); font-family: 'DM Mono', monospace; }
+
+  /* Inner pages */
+  .inner { padding: 36px 44px 30px; }
+
+  /* Page header */
+  .page-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 2.5px solid var(--navy); margin-bottom: 20px; }
+  .page-header-title { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--navy); }
+  .page-num { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--gray-400); background: var(--gray-100); padding: 3px 9px; border-radius: 3px; }
+
+  /* Typography */
+  h2 { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; color: var(--navy); margin: 16px 0 8px; }
+  h2:first-child { margin-top: 0; }
+  h3 { font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: var(--blue-mid); margin: 13px 0 7px; }
+  p { margin-bottom: 8px; color: var(--gray-700); font-size: 12.5px; }
+  hr { border: none; border-top: 1px solid var(--gray-200); margin: 14px 0; }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; font-size: 11.5px; margin: 10px 0; }
+  thead tr { background: var(--navy); color: white; }
+  thead th { padding: 8px 11px; text-align: left; font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.5px; font-weight: 500; }
+  tbody td { padding: 7px 11px; border-bottom: 1px solid var(--gray-200); color: var(--gray-700); }
+  tbody tr:nth-child(even) { background: var(--gray-100); }
+  tbody tr.hl td { background: #E8F4FD; font-weight: 600; color: var(--navy); }
+
+  .badge { display: inline-block; background: var(--accent); color: white; font-size: 8.5px; padding: 1px 5px; border-radius: 2px; font-family: 'DM Mono', monospace; letter-spacing: 1px; margin-left: 5px; vertical-align: middle; }
+
+  /* Info boxes */
+  .info-grid { display: grid; gap: 10px; margin: 10px 0; }
+  .info-grid-2 { grid-template-columns: 1fr 1fr; }
+  .info-grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .info-grid-4 { grid-template-columns: repeat(4,1fr); }
+  .info-box { background: var(--gray-100); border-left: 4px solid var(--blue-mid); padding: 11px 13px; border-radius: 0 3px 3px 0; }
+  .info-box.accent { border-left-color: var(--accent); }
+  .info-box.gold { border-left-color: var(--gold); }
+  .info-box.green { border-left-color: var(--green); }
+  .info-box.dark { background: var(--navy); border-left-color: var(--accent); }
+  .info-box-title { font-size: 9px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--gray-400); margin-bottom: 3px; font-family: 'DM Mono', monospace; }
+  .info-box.dark .info-box-title { color: var(--blue-light); }
+  .info-box-val { font-size: 18px; font-weight: 700; font-family: 'Playfair Display', serif; color: var(--navy); line-height: 1.2; }
+  .info-box.dark .info-box-val { color: white; }
+  .info-box-sub { font-size: 10px; color: var(--gray-400); margin-top: 2px; }
+  .info-box.dark .info-box-sub { color: var(--blue-light); }
+
+  /* Callout */
+  .callout { background: var(--navy); color: white; padding: 16px 22px; border-radius: 4px; margin: 14px 0; font-family: 'Playfair Display', serif; font-size: 14px; font-style: italic; line-height: 1.5; position: relative; }
+  .callout::before { content: '"'; font-size: 48px; line-height: 1; color: var(--accent); position: absolute; top: 8px; left: 14px; font-family: 'Playfair Display', serif; }
+  .callout p { padding-left: 26px; color: white; margin: 0; font-size: 13px; }
+
+  /* Note */
+  .note { background: #FFF8E1; border: 1px solid #FFE082; padding: 8px 12px; border-radius: 3px; font-size: 11px; color: #5D4200; margin: 10px 0; }
+  .note strong { color: #3A2800; }
+
+  /* Num list */
+  .num-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .num-list li { display: flex; gap: 11px; color: var(--gray-700); font-size: 12.5px; }
+  .num-list li .num { min-width: 22px; height: 22px; background: var(--navy); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 600; flex-shrink: 0; margin-top: 1px; }
+
+  /* Route wrap */
+  .route-wrap { background: var(--gray-100); border-radius: 5px; padding: 16px 18px; margin: 10px 0; }
+  .route-wrap-label { font-family: 'DM Mono', monospace; font-size: 9.5px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gray-400); margin-bottom: 10px; }
+
+  /* Arrow box */
+  .arrow-box { display: flex; align-items: flex-start; gap: 9px; padding: 7px 12px; background: var(--gray-100); border-radius: 3px; font-size: 12px; margin: 5px 0; color: var(--gray-700); }
+  .arrow { color: var(--accent); font-weight: 700; margin-top: 1px; }
+
+  /* Two/three col */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+  /* Step row */
+  .step-row { display: flex; align-items: stretch; gap: 0; margin: 10px 0; border: 1px solid var(--gray-200); border-radius: 4px; overflow: hidden; }
+  .step-cell { flex: 1; padding: 10px 12px; border-right: 1px solid var(--gray-200); font-size: 11.5px; }
+  .step-cell:last-child { border-right: none; }
+  .step-cell-top { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--gray-400); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+  .step-cell-main { font-weight: 600; color: var(--navy); font-size: 12.5px; }
+  .step-cell-sub { font-size: 11px; color: var(--gray-400); margin-top: 2px; }
+  .step-cell.dark { background: var(--navy); }
+  .step-cell.dark .step-cell-top { color: var(--blue-light); }
+  .step-cell.dark .step-cell-main { color: white; }
+  .step-cell.dark .step-cell-sub { color: var(--gray-400); }
+  .step-cell.red { background: var(--accent); }
+  .step-cell.red .step-cell-top { color: rgba(255,255,255,0.7); }
+  .step-cell.red .step-cell-main { color: white; }
+  .step-cell.red .step-cell-sub { color: rgba(255,255,255,0.75); }
+  .step-cell.blue { background: var(--blue-mid); }
+  .step-cell.blue .step-cell-top { color: rgba(255,255,255,0.7); }
+  .step-cell.blue .step-cell-main { color: white; }
+  .step-cell.blue .step-cell-sub { color: rgba(255,255,255,0.75); }
+
+  /* Scenario cards */
+  .scenario-card { border: 1px solid var(--gray-200); border-top: 4px solid var(--navy); border-radius: 0 0 5px 5px; padding: 14px 16px; }
+  .scenario-card.s2 { border-top-color: var(--blue-mid); }
+  .scenario-card.s3 { border-top-color: var(--accent); }
+
+  /* TOC items */
+  .toc-item { display: flex; justify-content: space-between; align-items: baseline; padding: 6px 0; border-bottom: 1px dotted var(--gray-200); font-size: 12.5px; }
+  .toc-item:last-child { border-bottom: none; }
+  .toc-item-title { color: var(--gray-700); }
+  .toc-item-page { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--gray-400); background: var(--gray-100); padding: 2px 7px; border-radius: 2px; }
+  .toc-section { margin-top: 18px; margin-bottom: 5px; font-size: 9.5px; letter-spacing: 2px; text-transform: uppercase; color: var(--blue-mid); font-family: 'DM Mono', monospace; }
+
+  /* Phase cards */
+  .phase-card { background: var(--white); border: 1px solid var(--gray-200); border-top: 4px solid var(--navy); padding: 16px; border-radius: 0 0 5px 5px; }
+  .phase-card.p2 { border-top-color: var(--blue-mid); }
+  .phase-card.p3 { border-top-color: var(--accent); }
+  .phase-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--gray-400); margin-bottom: 5px; }
+  .phase-title { font-weight: 600; font-size: 13px; color: var(--navy); margin-bottom: 7px; }
+  .phase-months { display: inline-block; background: var(--navy); color: white; font-size: 9.5px; font-family: 'DM Mono', monospace; padding: 2px 8px; border-radius: 2px; margin-bottom: 9px; }
+  .phase-card.p2 .phase-months { background: var(--blue-mid); }
+  .phase-card.p3 .phase-months { background: var(--accent); }
+  .phase-items { font-size: 11.5px; color: var(--gray-700); list-style: none; }
+  .phase-items li { margin-bottom: 3px; padding-left: 12px; position: relative; }
+  .phase-items li::before { content: '→'; position: absolute; left: 0; color: var(--accent); font-size: 10px; }
+
+  /* Risk */
+  .risk-high { color: #C0392B; font-weight: 600; }
+  .risk-med { color: #E67E22; font-weight: 600; }
+  .risk-low { color: #27AE60; font-weight: 600; }
+
+  .disclaimer { font-size: 10px; color: var(--gray-400); border-top: 1px solid var(--gray-200); padding-top: 10px; margin-top: 16px; font-style: italic; }
+
+  /* City section */
+  .city-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .city-flag { font-size: 22px; line-height: 1; }
+  .city-name { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; color: var(--navy); }
+  .city-subtitle { font-size: 10px; color: var(--gray-400); font-family: 'DM Mono', monospace; letter-spacing: 1px; text-transform: uppercase; }
+  .stat-pill { display: inline-block; background: var(--navy); color: white; font-family: 'DM Mono', monospace; font-size: 9px; padding: 3px 8px; border-radius: 2px; margin: 2px 3px 2px 0; }
+  .stat-pill.blue { background: var(--blue-mid); }
+  .stat-pill.red { background: var(--accent); }
+  .stat-pill.green { background: var(--green); }
+  .takeaway-box { background: var(--gray-100); border-left: 4px solid var(--accent); padding: 10px 14px; border-radius: 0 3px 3px 0; margin-top: 10px; font-size: 12px; color: var(--gray-700); }
+  .takeaway-box strong { color: var(--navy); }
+
+  /* ─── SURVEY RESULTS (bottom of report) ─── */
+  #survey-results-section {
+    background: var(--white);
+    border-radius: 6px;
+    box-shadow: 0 2px 12px rgba(13,31,60,0.08);
+    overflow: hidden;
+  }
+  .results-header {
+    background: var(--navy);
+    padding: 24px 40px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .results-header-title { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: white; }
+  .results-header-sub { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--blue-light); margin-top: 3px; }
+  .results-body { padding: 32px 40px; }
+
+  .results-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; margin-bottom: 32px; }
+
+  .result-card { }
+  .result-card-title { font-family: 'DM Mono', monospace; font-size: 9.5px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gray-400); margin-bottom: 12px; }
+  .result-total { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--gray-400); margin-bottom: 8px; }
+
+  .result-bar-row { margin-bottom: 8px; }
+  .result-bar-label { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--gray-700); margin-bottom: 3px; }
+  .result-bar-label span:last-child { font-family: 'DM Mono', monospace; color: var(--navy); font-weight: 600; }
+  .result-bar-track { height: 8px; background: var(--gray-200); border-radius: 4px; overflow: hidden; }
+  .result-bar-fill { height: 100%; border-radius: 4px; background: var(--navy); transition: width 1s ease; }
+  .result-bar-fill.blue { background: var(--blue-mid); }
+  .result-bar-fill.red { background: var(--accent); }
+  .result-bar-fill.green { background: var(--green); }
+  .result-bar-fill.gold { background: var(--gold); }
+
+  /* Opinions feed */
+  .opinions-section { border-top: 1px solid var(--gray-200); padding-top: 24px; }
+  .opinions-title { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+  .opinions-sub { font-size: 12px; color: var(--gray-400); margin-bottom: 16px; }
+  .opinions-feed { display: flex; flex-direction: column; gap: 10px; max-height: 400px; overflow-y: auto; padding-right: 4px; }
+  .opinions-feed::-webkit-scrollbar { width: 4px; }
+  .opinions-feed::-webkit-scrollbar-thumb { background: var(--gray-200); border-radius: 4px; }
+
+  .opinion-card {
+    background: var(--gray-100);
+    border-radius: 5px;
+    padding: 12px 16px;
+    border-left: 3px solid var(--blue-mid);
+    font-size: 12.5px;
+    color: var(--gray-700);
+    line-height: 1.55;
+  }
+  .opinion-card-meta { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--gray-400); margin-bottom: 5px; letter-spacing: 0.5px; }
+  .opinion-empty { text-align: center; padding: 32px; color: var(--gray-400); font-size: 12px; }
+
+  /* loading state for results */
+  .results-loading { text-align: center; padding: 40px; color: var(--gray-400); font-size: 12.5px; }
+
+  /* ─── BACK COVER ─── */
+  .back-cover { background: var(--navy); min-height: 360px; display: flex; justify-content: center; align-items: center; border-radius: 6px; position: relative; overflow: hidden; }
+  .back-cover .cover-left-bar { position: absolute; left: 0; top: 0; bottom: 0; width: 8px; background: var(--accent); }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 900px) {
+    .shell { flex-direction: column; padding: 12px; gap: 14px; }
+    .sidebar { position: static; width: 100%; max-height: none; flex-direction: row; flex-wrap: wrap; }
+    .survey-widget { flex: 1; min-width: 280px; }
+    .toc-widget { display: none; }
+    .info-grid-4 { grid-template-columns: 1fr 1fr; }
+    .results-grid { grid-template-columns: 1fr; }
+    .kpi-strip { grid-template-columns: repeat(2,1fr); }
+  }
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- ══════════════════════════════════
+       REPORT COLUMN
+  ══════════════════════════════════ -->
+  <div class="report-col">
+
+    <!-- PAGE 1: COVER -->
+    <div class="page cover" id="p-cover">
+      <div class="cover-left-bar"></div>
+      <div class="cover-content">
+        <div class="cover-tag">Urban Transport Analysis · 2025</div>
+        <div class="cover-headline">
+          <div class="cover-title">Blue Line<br><span>Express</span></div>
+          <div class="cover-subtitle">Feasibility Study for a Skip-Stop Service</div>
+          <div class="cover-subtitle" style="font-size:14px;color:var(--gray-400);margin-top:4px;">on the Delhi Metro East–West Corridor</div>
+          <div class="cover-corridor">
+            Dwarka Sector 21 ——— Rajiv Chowk ——— Botanical Garden ——— Noida Electronic City<br>
+            56.11 km · 50 stations · 85 min end-to-end
+          </div>
+        </div>
+        <svg viewBox="0 0 460 40" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:460px;margin:28px 0 0;">
+          <line x1="20" y1="20" x2="440" y2="20" stroke="#2B6CB0" stroke-width="3"/>
+          <g fill="#4A9FD4">
+            <circle cx="20" cy="20" r="6"/><circle cx="80" cy="20" r="5"/><circle cx="130" cy="20" r="5"/>
+            <circle cx="175" cy="20" r="7" fill="#E63946"/><circle cx="220" cy="20" r="7" fill="#E63946"/>
+            <circle cx="270" cy="20" r="5"/><circle cx="315" cy="20" r="7" fill="#E63946"/>
+            <circle cx="360" cy="20" r="5"/><circle cx="440" cy="20" r="6"/>
+          </g>
+          <text x="20" y="36" font-family="DM Mono,monospace" font-size="7" fill="#7A93B0" text-anchor="middle">DW21</text>
+          <text x="175" y="36" font-family="DM Mono,monospace" font-size="7" fill="#E63946" text-anchor="middle">RC</text>
+          <text x="220" y="36" font-family="DM Mono,monospace" font-size="7" fill="#E63946" text-anchor="middle">MH</text>
+          <text x="315" y="36" font-family="DM Mono,monospace" font-size="7" fill="#E63946" text-anchor="middle">BG</text>
+          <text x="440" y="36" font-family="DM Mono,monospace" font-size="7" fill="#7A93B0" text-anchor="middle">NEC</text>
+        </svg>
+      </div>
+      <div class="kpi-strip">
+        <div class="kpi-item"><div class="kpi-num">25<span>min</span></div><div class="kpi-label">Max Time Saving</div></div>
+        <div class="kpi-item"><div class="kpi-num">₹3,250<span>M</span></div><div class="kpi-label">10-yr NPV</div></div>
+        <div class="kpi-item"><div class="kpi-num">₹50–150<span>Cr</span></div><div class="kpi-label">Est. CapEx</div></div>
+        <div class="kpi-item"><div class="kpi-num">142<span>t</span></div><div class="kpi-label">CO₂ Saved/yr</div></div>
+      </div>
+      <div class="cover-footer">
+        <span class="cover-footer-text">Independent Study · Public Data Only</span>
+        <span class="cover-footer-text">Not affiliated with any official transport authority</span>
+      </div>
+    </div>
+
+    <!-- PAGE 2: TOC -->
+    <div class="page inner" id="p-toc">
+      <div class="page-header">
+        <span class="page-header-title">Contents</span>
+        <span class="page-num">p. i</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 36px;">
+        <div>
+          <div class="toc-section">Overview</div>
+          <div class="toc-item"><span class="toc-item-title">1. Executive Summary</span><span class="toc-item-page">1</span></div>
+          <div class="toc-item"><span class="toc-item-title">2. Blue Line Network Overview</span><span class="toc-item-page">2</span></div>
+          <div class="toc-section">How the Express Operates</div>
+          <div class="toc-item"><span class="toc-item-title">3a. Core Mechanics &amp; Rider Experience</span><span class="toc-item-page">3a</span></div>
+          <div class="toc-item"><span class="toc-item-title">3b. Signalling, Fleet &amp; Timetable</span><span class="toc-item-page">3b</span></div>
+          <div class="toc-section">Analysis</div>
+          <div class="toc-item"><span class="toc-item-title">4. Express Scenarios &amp; Time Savings</span><span class="toc-item-page">4</span></div>
+          <div class="toc-item"><span class="toc-item-title">5. Timetable Integration</span><span class="toc-item-page">5</span></div>
+          <div class="toc-item"><span class="toc-item-title">6. Operational Considerations</span><span class="toc-item-page">5</span></div>
+        </div>
+        <div>
+          <div class="toc-section">Financials &amp; Impact</div>
+          <div class="toc-item"><span class="toc-item-title">7. Financial Analysis</span><span class="toc-item-page">6</span></div>
+          <div class="toc-item"><span class="toc-item-title">8. Social &amp; Environmental Benefits</span><span class="toc-item-page">8</span></div>
+          <div class="toc-item"><span class="toc-item-title">9. Equity Impacts &amp; Mitigations</span><span class="toc-item-page">8</span></div>
+          <div class="toc-section">Global Precedents</div>
+          <div class="toc-item"><span class="toc-item-title">5a. New York &amp; Shanghai</span><span class="toc-item-page">5a</span></div>
+          <div class="toc-item"><span class="toc-item-title">5b. Tokyo &amp; Global Synthesis</span><span class="toc-item-page">5b</span></div>
+          <div class="toc-section">Implementation</div>
+          <div class="toc-item"><span class="toc-item-title">10. Implementation Roadmap</span><span class="toc-item-page">10</span></div>
+          <div class="toc-item"><span class="toc-item-title">11. Risks &amp; Mitigations</span><span class="toc-item-page">11</span></div>
+          <div class="toc-item"><span class="toc-item-title">12. Conclusion &amp; Recommendations</span><span class="toc-item-page">12</span></div>
+        </div>
+      </div>
+      <div style="margin-top:28px;padding:16px;background:var(--gray-100);border-radius:4px;font-size:12px;color:var(--gray-400);">
+        <strong style="color:var(--navy)">Note:</strong> Independent study. All data sourced from publicly available records. Assumptions noted where official data unavailable.
+      </div>
+    </div>
+
+    <!-- PAGE 3: EXECUTIVE SUMMARY -->
+    <div class="page inner" id="p-exec">
+      <div class="page-header">
+        <span class="page-header-title">Executive Summary</span>
+        <span class="page-num">p. 1</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:22px;">
+        <div style="background:var(--navy);color:white;padding:16px 12px;border-radius:4px;text-align:center;">
+          <div style="font-family:'Playfair Display',serif;font-size:26px;font-weight:700;line-height:1;">56.11<span style="font-size:13px;font-weight:400;"> km</span></div>
+          <div style="font-size:9.5px;letter-spacing:1px;text-transform:uppercase;color:var(--blue-light);margin-top:5px;">Corridor Length</div>
+        </div>
+        <div style="background:var(--navy);color:white;padding:16px 12px;border-radius:4px;text-align:center;">
+          <div style="font-family:'Playfair Display',serif;font-size:26px;font-weight:700;line-height:1;">50<span style="font-size:13px;font-weight:400;"> stn</span></div>
+          <div style="font-size:9.5px;letter-spacing:1px;text-transform:uppercase;color:var(--blue-light);margin-top:5px;">Total Stations</div>
+        </div>
+        <div style="background:var(--accent);color:white;padding:16px 12px;border-radius:4px;text-align:center;">
+          <div style="font-family:'Playfair Display',serif;font-size:26px;font-weight:700;line-height:1;">25<span style="font-size:13px;font-weight:400;"> min</span></div>
+          <div style="font-size:9.5px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.75);margin-top:5px;">Time Saved (Best)</div>
+        </div>
+        <div style="background:var(--blue-mid);color:white;padding:16px 12px;border-radius:4px;text-align:center;">
+          <div style="font-family:'Playfair Display',serif;font-size:26px;font-weight:700;line-height:1;">29<span style="font-size:13px;font-weight:400;"> %</span></div>
+          <div style="font-size:9.5px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.75);margin-top:5px;">Faster Journey</div>
+        </div>
+      </div>
+      <p>The east–west corridor runs 56.11 km from Dwarka Sector 21 to Noida Electronic City across 50 stations. End-to-end journey currently stands at approximately <strong>85 minutes</strong>.</p>
+      <p>This report evaluates a skip-stop <em>Express</em> service on the same tracks, serving only major interchange and high-footfall stations. Three scenarios were modelled — stopping at 30, 25, or 20 stations — with potential time savings of <strong>19 to 25 minutes</strong> (up to 29% faster).</p>
+      <p>The proposal requires <strong>no new tracks or platforms</strong>. Key requirements are timetable restructuring and minor CBTC signalling adjustments, estimated at ₹50–150 crore.</p>
+      <div class="callout"><p>Financial modelling at 25% ridership uptake and 8% discount rate yields a 10-year Net Present Value of ₹3,250 million — strongly positive across all tested scenarios.</p></div>
+      <hr/>
+      <h3>At a Glance</h3>
+      <div class="info-grid info-grid-4">
+        <div class="info-box"><div class="info-box-title">Capital Expenditure</div><div class="info-box-val">₹50–150 Cr</div><div class="info-box-sub">Signalling &amp; CBTC only</div></div>
+        <div class="info-box accent"><div class="info-box-title">10-Year NPV</div><div class="info-box-val">₹3,250 M</div><div class="info-box-sub">@ 8% discount rate</div></div>
+        <div class="info-box gold"><div class="info-box-title">CO₂ Reduction</div><div class="info-box-val">~142 t/yr</div><div class="info-box-sub">10% modal shift</div></div>
+        <div class="info-box"><div class="info-box-title">Rollout Period</div><div class="info-box-val">18 months</div><div class="info-box-sub">3-phase plan</div></div>
+      </div>
+    </div>
+
+    <!-- PAGE 4: NETWORK OVERVIEW -->
+    <div class="page inner" id="p-network">
+      <div class="page-header">
+        <span class="page-header-title">Blue Line Network Overview</span>
+        <span class="page-num">p. 2</span>
+      </div>
+      <div class="route-wrap">
+        <svg viewBox="0 0 640 120" xmlns="http://www.w3.org/2000/svg" style="width:100%;">
+          <line x1="30" y1="50" x2="580" y2="50" stroke="#1A4B8C" stroke-width="5" stroke-linecap="round"/>
+          <line x1="340" y1="50" x2="430" y2="90" stroke="#2B6CB0" stroke-width="3" stroke-dasharray="4,3"/>
+          <circle cx="30" cy="50" r="7" fill="#0D1F3C"/>
+          <text x="30" y="30" font-family="DM Mono,monospace" font-size="8" fill="#0D1F3C" text-anchor="middle" font-weight="600">DW SEC 21</text>
+          <text x="30" y="40" font-family="DM Mono,monospace" font-size="7" fill="#7A93B0" text-anchor="middle">Airport Exp.</text>
+          <circle cx="90" cy="50" r="5" fill="#1A4B8C"/>
+          <text x="90" y="38" font-family="DM Mono,monospace" font-size="7.5" fill="#334155" text-anchor="middle">Dwarka</text>
+          <circle cx="150" cy="50" r="5" fill="#1A4B8C"/>
+          <text x="150" y="66" font-family="DM Mono,monospace" font-size="7.5" fill="#334155" text-anchor="middle">JW</text>
+          <circle cx="210" cy="50" r="5" fill="#1A4B8C"/>
+          <text x="210" y="38" font-family="DM Mono,monospace" font-size="7.5" fill="#334155" text-anchor="middle">Kirti Nagar</text>
+          <circle cx="280" cy="50" r="9" fill="#E63946"/>
+          <text x="280" y="30" font-family="DM Mono,monospace" font-size="8" fill="#E63946" text-anchor="middle" font-weight="700">RAJIV CHOWK</text>
+          <text x="280" y="21" font-family="DM Mono,monospace" font-size="6.5" fill="#7A93B0" text-anchor="middle">Yellow · 1.70L/day</text>
+          <circle cx="340" cy="50" r="5" fill="#1A4B8C"/>
+          <text x="340" y="66" font-family="DM Mono,monospace" font-size="7.5" fill="#334155" text-anchor="middle">Mandi House</text>
+          <circle cx="380" cy="50" r="5" fill="#2B6CB0"/>
+          <text x="380" y="38" font-family="DM Mono,monospace" font-size="7" fill="#2B6CB0" text-anchor="middle">Yamuna Bk</text>
+          <text x="425" y="86" font-family="DM Mono,monospace" font-size="7" fill="#2B6CB0" text-anchor="middle">→ Vaishali</text>
+          <circle cx="430" cy="50" r="5" fill="#1A4B8C"/>
+          <text x="430" y="66" font-family="DM Mono,monospace" font-size="7.5" fill="#334155" text-anchor="middle">Mayur Vihar-I</text>
+          <circle cx="490" cy="50" r="9" fill="#E63946"/>
+          <text x="490" y="30" font-family="DM Mono,monospace" font-size="8" fill="#E63946" text-anchor="middle" font-weight="700">BOTANICAL GDN</text>
+          <text x="490" y="21" font-family="DM Mono,monospace" font-size="6.5" fill="#7A93B0" text-anchor="middle">Magenta · 1.84L/day</text>
+          <circle cx="535" cy="50" r="5" fill="#1A4B8C"/>
+          <text x="535" y="66" font-family="DM Mono,monospace" font-size="7.5" fill="#334155" text-anchor="middle">Noida 52</text>
+          <circle cx="580" cy="50" r="7" fill="#0D1F3C"/>
+          <text x="580" y="30" font-family="DM Mono,monospace" font-size="8" fill="#0D1F3C" text-anchor="middle" font-weight="600">NOIDA EC</text>
+          <circle cx="30" cy="110" r="5" fill="#E63946"/>
+          <text x="40" y="114" font-family="DM Mono,monospace" font-size="8" fill="#334155">Major interchange</text>
+          <circle cx="140" cy="110" r="5" fill="#1A4B8C"/>
+          <text x="150" y="114" font-family="DM Mono,monospace" font-size="8" fill="#334155">Express stop</text>
+          <line x1="250" y1="110" x2="280" y2="110" stroke="#2B6CB0" stroke-width="2" stroke-dasharray="4,2"/>
+          <text x="288" y="114" font-family="DM Mono,monospace" font-size="8" fill="#334155">Branch (Line 4)</text>
+        </svg>
+      </div>
+      <div class="two-col">
+        <div>
+          <h3>Route &amp; Corridor</h3>
+          <p><strong>Line 3</strong> runs from Dwarka Sector 21 to Noida Electronic City — 56.114 km across 50 stations.</p>
+          <p><strong>Line 4</strong> branches from Yamuna Bank to Vaishali — 8.511 km across 8 stations.</p>
+          <h3>Current Service</h3>
+          <p>Operating hours: 6:00 AM to ~11:30 PM<br>
+          Peak headway: 2–3 minutes<br>
+          Off-peak headway: 7–10 minutes<br>
+          Train composition: 6-car sets with CBTC signalling</p>
+        </div>
+        <div>
+          <h3>Key Interchange Hubs</h3>
+          <table>
+            <thead><tr><th>Station</th><th>Connecting</th><th>Footfall</th></tr></thead>
+            <tbody>
+              <tr><td>Rajiv Chowk</td><td>Yellow</td><td>~1.70 lakh</td></tr>
+              <tr><td>Botanical Garden</td><td>Magenta</td><td>~1.84 lakh</td></tr>
+              <tr><td>Mandi House</td><td>Violet</td><td>—</td></tr>
+              <tr><td>Kirti Nagar</td><td>Green</td><td>—</td></tr>
+              <tr><td>Janakpuri West</td><td>Magenta</td><td>—</td></tr>
+              <tr><td>Noida Sector 52</td><td>Aqua</td><td>—</td></tr>
+              <tr><td>Dwarka Sec 21</td><td>Airport Exp.</td><td>—</td></tr>
+              <tr><td>Mayur Vihar-I</td><td>Pink</td><td>—</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 3a: HOW THE EXPRESS OPERATES -->
+    <div class="page inner" id="p-ops-a">
+      <div class="page-header">
+        <span class="page-header-title">How the Blue Line Express Will Operate</span>
+        <span class="page-num">p. 3a</span>
+      </div>
+      <p>The Blue Line Express runs on the <strong>same tracks, same stations, same rolling stock</strong> as the existing local service. No civil works required. The operational change is entirely in how trains are sequenced and which stops they serve.</p>
+      <h2>The Skip-Stop Model</h2>
+      <div class="two-col">
+        <div>
+          <p>Express trains skip <strong>25–30 intermediate stations</strong>, stopping only at major interchange hubs and high-footfall termini. Skipped stations continue to receive <strong>local service</strong> — riders are not stranded.</p>
+          <p>Each skipped stop saves approximately <strong>~1 minute</strong> (30 sec dwell + acceleration/deceleration loss). Skipping 25 stops yields ~24 minutes of end-to-end saving.</p>
+          <div class="note"><strong>Key principle:</strong> Express trains do not overtake locals. They depart after a gap and stay ahead. Timetabling prevents catching the local ahead.</div>
+        </div>
+        <div>
+          <div class="route-wrap" style="padding:14px;">
+            <div class="route-wrap-label">Stop pattern comparison</div>
+            <svg viewBox="0 0 220 110" xmlns="http://www.w3.org/2000/svg" style="width:100%;">
+              <text x="0" y="18" font-family="DM Mono,monospace" font-size="8.5" fill="#334155" font-weight="600">LOCAL</text>
+              <line x1="0" y1="30" x2="210" y2="30" stroke="#7A93B0" stroke-width="2.5"/>
+              <g fill="#7A93B0">
+                <circle cx="0" cy="30" r="4"/><circle cx="21" cy="30" r="4"/><circle cx="42" cy="30" r="4"/>
+                <circle cx="63" cy="30" r="4"/><circle cx="84" cy="30" r="4"/><circle cx="105" cy="30" r="4"/>
+                <circle cx="126" cy="30" r="4"/><circle cx="147" cy="30" r="4"/><circle cx="168" cy="30" r="4"/>
+                <circle cx="189" cy="30" r="4"/><circle cx="210" cy="30" r="4"/>
+              </g>
+              <text x="0" y="43" font-family="DM Mono,monospace" font-size="7" fill="#7A93B0">DW21</text>
+              <text x="195" y="43" font-family="DM Mono,monospace" font-size="7" fill="#7A93B0">NEC</text>
+              <text x="90" y="43" font-family="DM Mono,monospace" font-size="7" fill="#7A93B0">RC</text>
+              <text x="0" y="68" font-family="DM Mono,monospace" font-size="8.5" fill="#E63946" font-weight="600">EXPRESS</text>
+              <line x1="0" y1="80" x2="210" y2="80" stroke="#1A4B8C" stroke-width="2.5"/>
+              <circle cx="0" cy="80" r="5" fill="#E63946"/>
+              <circle cx="63" cy="80" r="5" fill="#E63946"/>
+              <circle cx="105" cy="80" r="5" fill="#E63946"/>
+              <circle cx="147" cy="80" r="5" fill="#E63946"/>
+              <circle cx="189" cy="80" r="5" fill="#E63946"/>
+              <circle cx="210" cy="80" r="5" fill="#E63946"/>
+              <circle cx="21" cy="80" r="3" fill="none" stroke="#D1DCE8" stroke-width="1.5"/>
+              <circle cx="42" cy="80" r="3" fill="none" stroke="#D1DCE8" stroke-width="1.5"/>
+              <circle cx="84" cy="80" r="3" fill="none" stroke="#D1DCE8" stroke-width="1.5"/>
+              <circle cx="126" cy="80" r="3" fill="none" stroke="#D1DCE8" stroke-width="1.5"/>
+              <circle cx="168" cy="80" r="3" fill="none" stroke="#D1DCE8" stroke-width="1.5"/>
+              <text x="0" y="100" font-family="DM Mono,monospace" font-size="7" fill="#E63946">● STOP</text>
+              <text x="60" y="100" font-family="DM Mono,monospace" font-size="7" fill="#D1DCE8">○ SKIP</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <hr/>
+      <h2>Train Sequencing on Shared Track</h2>
+      <p>No passing loops exist. Express trains must be timetabled to run in the gap between two locals.</p>
+      <div class="step-row">
+        <div class="step-cell dark"><div class="step-cell-top">T + 0 min</div><div class="step-cell-main">Local departs</div><div class="step-cell-sub">All 50 stops, normal headway</div></div>
+        <div class="step-cell blue"><div class="step-cell-top">T + 3 min</div><div class="step-cell-main">Express follows</div><div class="step-cell-sub">3-min gap = safe separation</div></div>
+        <div class="step-cell"><div class="step-cell-top">T + 5 min</div><div class="step-cell-main">Slot dropped</div><div class="step-cell-sub">Next local slot skipped</div></div>
+        <div class="step-cell dark"><div class="step-cell-top">T + 9 min</div><div class="step-cell-main">Next local departs</div><div class="step-cell-sub">Pattern resets</div></div>
+      </div>
+      <div class="note"><strong>Why 3 minutes?</strong> At peak headway of 2–3 min, express can never catch the preceding local. CBTC issues speed restriction if gap closes below 90 sec. Hard brake at 60 sec.</div>
+      <hr/>
+      <h2>What Riders Experience</h2>
+      <div class="three-col">
+        <div>
+          <h3>Long-haul rider</h3>
+          <p style="font-size:12px;">Boards express at Dwarka Sec 21. Arrives Noida EC in ~61 min instead of 85. No transfer needed. Same platform — waits for the express marker.</p>
+        </div>
+        <div>
+          <h3>Skipped-station rider</h3>
+          <p style="font-size:12px;">Local train still stops at their station. Headway increases slightly — maximum extra wait ~4 min. Guaranteed minimum: 1 local per 3 expresses.</p>
+        </div>
+        <div>
+          <h3>Interchange rider</h3>
+          <p style="font-size:12px;">All major interchange hubs — Rajiv Chowk, Botanical Garden, Kirti Nagar, Janakpuri West — remain express stops. Cross-platform transfers unaffected.</p>
+        </div>
+      </div>
+      <hr/>
+      <h2>Platform Communication</h2>
+      <div class="info-grid info-grid-4">
+        <div class="info-box"><div class="info-box-title">Platform boards</div><div style="font-size:12px;color:var(--gray-700);margin-top:4px;">LED strip shows EXPRESS / LOCAL per train</div></div>
+        <div class="info-box accent"><div class="info-box-title">PA announcement</div><div style="font-size:12px;color:var(--gray-700);margin-top:4px;">Hindi + English, 60 sec before arrival</div></div>
+        <div class="info-box gold"><div class="info-box-title">App integration</div><div style="font-size:12px;color:var(--gray-700);margin-top:4px;">Delhi Metro app shows express in trip planner</div></div>
+        <div class="info-box green"><div class="info-box-title">Train livery</div><div style="font-size:12px;color:var(--gray-700);margin-top:4px;">Blue stripe on cab, "EXPRESS" on doors</div></div>
+      </div>
+    </div>
+
+    <!-- PAGE 3b: SIGNALLING & FLEET -->
+    <div class="page inner" id="p-ops-b">
+      <div class="page-header">
+        <span class="page-header-title">Signalling, Fleet &amp; Timetable Mechanics</span>
+        <span class="page-num">p. 3b</span>
+      </div>
+      <div class="callout"><p>The Blue Line already runs CBTC — the most advanced in-service signalling technology. Express operation is a software configuration change, not a hardware upgrade.</p></div>
+      <h2>CBTC and Mixed-Traffic Operation</h2>
+      <div class="two-col">
+        <div>
+          <p>Communications-Based Train Control (CBTC) enables continuous real-time tracking of every train's position and speed. The system enforces dynamic block separation — meaning it can enforce different headways for express vs. local trains simultaneously.</p>
+          <h3>What changes</h3>
+          <ul class="num-list">
+            <li><div class="num">①</div><div><strong>Stop patterns</strong> encoded in train management system per run ID</div></li>
+            <li><div class="num">②</div><div><strong>Platform door zones</strong> mapped — express passes through without triggering door open command</div></li>
+            <li><div class="num">③</div><div><strong>Speed profiles</strong> updated — express permitted higher inter-station speed where safe separation confirmed</div></li>
+            <li><div class="num">④</div><div><strong>Schedule margin</strong> added at Yamuna Bank junction — 2-min recovery buffer</div></li>
+          </ul>
+        </div>
+        <div>
+          <h3>What does NOT change</h3>
+          <div class="route-wrap" style="padding:12px 14px;">
+            <div class="route-wrap-label">No new infrastructure required</div>
+            <table style="margin:0;">
+              <thead><tr><th>Element</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td>Track layout</td><td style="color:var(--green);font-weight:600;">✓ Unchanged</td></tr>
+                <tr><td>Platform structures</td><td style="color:var(--green);font-weight:600;">✓ Unchanged</td></tr>
+                <tr><td>Rolling stock</td><td style="color:var(--green);font-weight:600;">✓ Same 6-car sets</td></tr>
+                <tr><td>Depot operations</td><td style="color:var(--green);font-weight:600;">✓ Scheduling only</td></tr>
+                <tr><td>AFC / ticketing</td><td style="color:var(--green);font-weight:600;">✓ No fare change</td></tr>
+                <tr><td>CBTC hardware</td><td style="color:var(--blue-mid);font-weight:600;">~ Software config</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="note" style="margin-top:8px;"><strong>Capex ₹50–150 Cr</strong> covers CBTC software licensing, timetable simulation, crew training, and signage retrofit.</div>
+        </div>
+      </div>
+      <hr/>
+      <h2>Fleet Scheduling &amp; Safety</h2>
+      <div class="two-col">
+        <div>
+          <h3>Peak-hour allocation (illustrative)</h3>
+          <div class="route-wrap" style="padding:12px 14px;">
+            <div class="route-wrap-label">Every ~3rd-4th slot = express</div>
+            <svg viewBox="0 0 240 44" xmlns="http://www.w3.org/2000/svg" style="width:100%;">
+              <rect x="0" y="5" width="20" height="26" fill="#0D1F3C" rx="2"/><text x="10" y="22" font-family="DM Mono,monospace" font-size="7" fill="white" text-anchor="middle">L</text>
+              <rect x="23" y="5" width="20" height="26" fill="#0D1F3C" rx="2"/><text x="33" y="22" font-family="DM Mono,monospace" font-size="7" fill="white" text-anchor="middle">L</text>
+              <rect x="46" y="5" width="20" height="26" fill="#E63946" rx="2"/><text x="56" y="22" font-family="DM Mono,monospace" font-size="7" fill="white" text-anchor="middle">E</text>
+              <rect x="69" y="5" width="20" height="26" fill="#0D1F3C" rx="2"/><text x="79" y="22" font-family="DM Mono,monospace" font-size="7" fill="white" text-anchor="middle">L</text>
+              <rect x="92" y="5" width="20" height="26" fill="#0D1F3C" rx="2"/><text x="102" y="22" font-family="DM Mono,monospace" font-size="7" fill="white" text-anchor="middle">L</text>
+              <rect x="115" y="5" width="20" height="26" fill="#E63946" rx="2"/><text x="125" y="22" font-family="DM Mono,monospace" font-size="7" fill="white" text-anchor="middle">E</text>
+              <rect x="138" y="5" width="20" height="26" fill="#0D1F3C" rx="2"/><text x="148" y="22" font-family="DM Mono,monospace" font-size="7" fill="white" text-anchor="middle">L</text>
+              <rect x="161" y="5" width="20" height="26" fill="#0D1F3C" rx="2"/><text x="171" y="22" font-family="DM Mono,monospace" font-size="7" fill="white" text-anchor="middle">L</text>
+              <rect x="184" y="5" width="20" height="26" fill="#E63946" rx="2"/><text x="194" y="22" font-family="DM Mono,monospace" font-size="7" fill="white" text-anchor="middle">E</text>
+              <rect x="207" y="5" width="20" height="26" fill="#0D1F3C" rx="2"/><text x="217" y="22" font-family="DM Mono,monospace" font-size="7" fill="white" text-anchor="middle">L</text>
+              <text x="0" y="42" font-family="DM Mono,monospace" font-size="7.5" fill="#334155">L = Local</text>
+              <rect x="60" y="36" width="8" height="8" fill="#E63946" rx="1"/>
+              <text x="71" y="43" font-family="DM Mono,monospace" font-size="7.5" fill="#E63946">E = Express</text>
+            </svg>
+          </div>
+          <h3 style="margin-top:12px;">Safety protocols</h3>
+          <div class="info-grid info-grid-3" style="gap:8px;">
+            <div class="info-box" style="padding:8px 10px;"><div class="info-box-title">Separation</div><div style="font-size:11px;color:var(--gray-700);margin-top:3px;">CBTC speed restriction at &lt;90s gap. Hard brake at 60s.</div></div>
+            <div class="info-box accent" style="padding:8px 10px;"><div class="info-box-title">Platform</div><div style="font-size:11px;color:var(--gray-700);margin-top:3px;">Express passes skipped stations at ≤40 km/h. Doors stay closed.</div></div>
+            <div class="info-box gold" style="padding:8px 10px;"><div class="info-box-title">Crew</div><div style="font-size:11px;color:var(--gray-700);margin-top:3px;">All drivers trained. Stop list shown digitally in cab.</div></div>
+          </div>
+        </div>
+        <div>
+          <h3>Off-peak vs. peak operation</h3>
+          <table style="margin-top:6px;">
+            <thead><tr><th>Period</th><th>Express freq.</th><th>Local headway</th><th>Phase</th></tr></thead>
+            <tbody>
+              <tr><td>Weekend off-peak (Pilot)</td><td>1/hr</td><td>~10–12 min</td><td><span class="badge">P2</span></td></tr>
+              <tr><td>Weekday off-peak</td><td>2/hr</td><td>~9 min</td><td><span class="badge">P3</span></td></tr>
+              <tr class="hl"><td>Weekday peak</td><td>Every 9 min</td><td>~4.5 min</td><td><span class="badge">P3</span></td></tr>
+            </tbody>
+          </table>
+          <div class="note" style="margin-top:8px;"><strong>Equity safeguard:</strong> Locals maintain 4.5-min headway at skipped stations at peak. No station drops below 6-min headway under any tested scenario.</div>
+          <h3 style="margin-top:14px;">Operational risks managed by CBTC</h3>
+          <ul class="num-list">
+            <li><div class="num">①</div><div>Express catches local → CBTC speed hold, schedule padding at junctions</div></li>
+            <li><div class="num">②</div><div>Schedule drift → 2-min recovery buffer at Yamuna Bank</div></li>
+            <li><div class="num">③</div><div>Door error at skipped stop → door-zone map prevents command</div></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 4: SCENARIOS -->
+    <div class="page inner" id="p-scenarios">
+      <div class="page-header">
+        <span class="page-header-title">Express Scenarios &amp; Time Savings</span>
+        <span class="page-num">p. 4</span>
+      </div>
+      <p>Three skip-stop configurations modelled. All assume max speed ~80 km/h, acceleration 1 m/s², 30-sec dwell per served stop.</p>
+      <div class="route-wrap" style="padding:16px 18px;">
+        <div class="route-wrap-label">End-to-end journey time — Dwarka Sec 21 → Noida EC</div>
+        <svg viewBox="0 0 560 165" xmlns="http://www.w3.org/2000/svg" style="width:100%;">
+          <line x1="70" y1="10" x2="70" y2="140" stroke="#D1DCE8" stroke-width="1"/>
+          <line x1="70" y1="140" x2="540" y2="140" stroke="#D1DCE8" stroke-width="1"/>
+          <line x1="70" y1="107" x2="540" y2="107" stroke="#EEF2F7" stroke-width="1" stroke-dasharray="3,3"/>
+          <line x1="70" y1="74" x2="540" y2="74" stroke="#EEF2F7" stroke-width="1" stroke-dasharray="3,3"/>
+          <line x1="70" y1="40" x2="540" y2="40" stroke="#EEF2F7" stroke-width="1" stroke-dasharray="3,3"/>
+          <line x1="70" y1="10" x2="540" y2="10" stroke="#EEF2F7" stroke-width="1" stroke-dasharray="3,3"/>
+          <text x="64" y="144" font-family="DM Mono,monospace" font-size="8" fill="#7A93B0" text-anchor="end">0</text>
+          <text x="64" y="111" font-family="DM Mono,monospace" font-size="8" fill="#7A93B0" text-anchor="end">20</text>
+          <text x="64" y="78" font-family="DM Mono,monospace" font-size="8" fill="#7A93B0" text-anchor="end">40</text>
+          <text x="64" y="44" font-family="DM Mono,monospace" font-size="8" fill="#7A93B0" text-anchor="end">60</text>
+          <text x="64" y="14" font-family="DM Mono,monospace" font-size="8" fill="#7A93B0" text-anchor="end">80 min</text>
+          <rect x="100" y="10" width="75" height="130" fill="#0D1F3C" rx="2"/>
+          <text x="137" y="6" font-family="DM Mono,monospace" font-size="9" fill="#0D1F3C" text-anchor="middle" font-weight="700">85 min</text>
+          <rect x="210" y="39" width="75" height="101" fill="#2B6CB0" rx="2"/>
+          <text x="247" y="35" font-family="DM Mono,monospace" font-size="9" fill="#2B6CB0" text-anchor="middle" font-weight="700">66 min</text>
+          <rect x="210" y="10" width="75" height="29" fill="none" stroke="#2B6CB0" stroke-width="1" stroke-dasharray="3,2" rx="1"/>
+          <text x="291" y="21" font-family="DM Mono,monospace" font-size="8" fill="#E63946" font-weight="700">−19 min</text>
+          <rect x="320" y="47" width="75" height="93" fill="#4A9FD4" rx="2"/>
+          <text x="357" y="43" font-family="DM Mono,monospace" font-size="9" fill="#4A9FD4" text-anchor="middle" font-weight="700">61 min</text>
+          <rect x="320" y="10" width="75" height="37" fill="none" stroke="#4A9FD4" stroke-width="1" stroke-dasharray="3,2" rx="1"/>
+          <text x="401" y="25" font-family="DM Mono,monospace" font-size="8" fill="#E63946" font-weight="700">−24 min</text>
+          <rect x="430" y="48" width="75" height="92" fill="#E63946" rx="2"/>
+          <text x="467" y="44" font-family="DM Mono,monospace" font-size="9" fill="#E63946" text-anchor="middle" font-weight="700">60 min</text>
+          <rect x="430" y="10" width="75" height="38" fill="none" stroke="#E63946" stroke-width="1" stroke-dasharray="3,2" rx="1"/>
+          <text x="511" y="26" font-family="DM Mono,monospace" font-size="8" fill="#E63946" font-weight="700">−25 min</text>
+          <text x="137" y="154" font-family="DM Sans,sans-serif" font-size="9" fill="#334155" text-anchor="middle">Local</text>
+          <text x="137" y="163" font-family="DM Mono,monospace" font-size="8" fill="#7A93B0" text-anchor="middle">50 stops</text>
+          <text x="247" y="154" font-family="DM Sans,sans-serif" font-size="9" fill="#334155" text-anchor="middle">Scenario A</text>
+          <text x="247" y="163" font-family="DM Mono,monospace" font-size="8" fill="#7A93B0" text-anchor="middle">30 stops</text>
+          <text x="357" y="154" font-family="DM Sans,sans-serif" font-size="9" fill="#334155" text-anchor="middle">Scenario B ★</text>
+          <text x="357" y="163" font-family="DM Mono,monospace" font-size="8" fill="#4A9FD4" text-anchor="middle">25 stops</text>
+          <text x="467" y="154" font-family="DM Sans,sans-serif" font-size="9" fill="#334155" text-anchor="middle">Scenario C</text>
+          <text x="467" y="163" font-family="DM Mono,monospace" font-size="8" fill="#7A93B0" text-anchor="middle">20 stops</text>
+        </svg>
+      </div>
+      <div class="three-col" style="margin-top:14px;">
+        <div class="scenario-card">
+          <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray-400);margin-bottom:4px;">Scenario A — Moderate</div>
+          <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--navy);">30 <span style="font-size:13px;font-weight:400;">stops</span></div>
+          <div style="font-size:11px;color:var(--gray-400);margin-bottom:10px;">Skips 20 of 50</div>
+          <table style="font-size:11px;margin:0;">
+            <tr><td style="padding:3px 0;color:var(--gray-400);">Journey time</td><td style="padding:3px 0;font-weight:600;color:var(--navy);text-align:right;">66 min</td></tr>
+            <tr><td style="padding:3px 0;color:var(--gray-400);">Time saved</td><td style="padding:3px 0;font-weight:600;color:var(--accent);text-align:right;">−19 min</td></tr>
+            <tr><td style="padding:3px 0;color:var(--gray-400);">Speed gain</td><td style="padding:3px 0;font-weight:600;color:var(--navy);text-align:right;">22%</td></tr>
+            <tr><td style="padding:3px 0;color:var(--gray-400);">Local headway</td><td style="padding:3px 0;font-weight:600;color:var(--navy);text-align:right;">~3.5 min</td></tr>
+          </table>
+          <div style="margin-top:10px;font-size:11px;color:var(--gray-700);">Lowest disruption. Conservative. Diminished time benefit vs. cost.</div>
+        </div>
+        <div class="scenario-card s2">
+          <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue-mid);margin-bottom:4px;">Scenario B <span class="badge" style="font-size:7.5px;">RECOMMENDED</span></div>
+          <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--navy);">25 <span style="font-size:13px;font-weight:400;">stops</span></div>
+          <div style="font-size:11px;color:var(--gray-400);margin-bottom:10px;">Skips 25 of 50</div>
+          <table style="font-size:11px;margin:0;">
+            <tr><td style="padding:3px 0;color:var(--gray-400);">Journey time</td><td style="padding:3px 0;font-weight:600;color:var(--navy);text-align:right;">61 min</td></tr>
+            <tr><td style="padding:3px 0;color:var(--gray-400);">Time saved</td><td style="padding:3px 0;font-weight:600;color:var(--accent);text-align:right;">−24 min</td></tr>
+            <tr><td style="padding:3px 0;color:var(--gray-400);">Speed gain</td><td style="padding:3px 0;font-weight:600;color:var(--navy);text-align:right;">28%</td></tr>
+            <tr><td style="padding:3px 0;color:var(--gray-400);">Local headway</td><td style="padding:3px 0;font-weight:600;color:var(--navy);text-align:right;">~4.5 min</td></tr>
+          </table>
+          <div style="margin-top:10px;font-size:11px;color:var(--gray-700);">Best tradeoff. Serves all major interchange hubs. Captures 96% of max saving.</div>
+        </div>
+        <div class="scenario-card s3">
+          <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);margin-bottom:4px;">Scenario C — Ultra</div>
+          <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--navy);">20 <span style="font-size:13px;font-weight:400;">stops</span></div>
+          <div style="font-size:11px;color:var(--gray-400);margin-bottom:10px;">Skips 30 of 50</div>
+          <table style="font-size:11px;margin:0;">
+            <tr><td style="padding:3px 0;color:var(--gray-400);">Journey time</td><td style="padding:3px 0;font-weight:600;color:var(--navy);text-align:right;">60 min</td></tr>
+            <tr><td style="padding:3px 0;color:var(--gray-400);">Time saved</td><td style="padding:3px 0;font-weight:600;color:var(--accent);text-align:right;">−25 min</td></tr>
+            <tr><td style="padding:3px 0;color:var(--gray-400);">Speed gain</td><td style="padding:3px 0;font-weight:600;color:var(--navy);text-align:right;">29%</td></tr>
+            <tr><td style="padding:3px 0;color:var(--gray-400);">Local headway</td><td style="padding:3px 0;font-weight:600;color:var(--navy);text-align:right;">~6 min</td></tr>
+          </table>
+          <div style="margin-top:10px;font-size:11px;color:var(--gray-700);">Only 1 min better than B. Significant equity risk. Not recommended for initial rollout.</div>
+        </div>
+      </div>
+      <div class="note" style="margin-top:12px;"><strong>Diminishing returns:</strong> 50→30 stops saves 19 min. 30→25 saves 5 more. 25→20 saves only 1 additional minute. Scenario B captures 96% of max possible saving.</div>
+    </div>
+
+    <!-- PAGE 5: TIMETABLE + OPERATIONAL (condensed) -->
+    <div class="page inner" id="p-ops">
+      <div class="page-header">
+        <span class="page-header-title">Timetable Integration &amp; Operational Considerations</span>
+        <span class="page-num">p. 5</span>
+      </div>
+      <div class="two-col">
+        <div>
+          <h2>Timetable Integration</h2>
+          <p>Express trains share tracks with locals — no overtaking possible. Safe sequencing requires the express to depart after a sufficient gap.</p>
+          <h3>Recommended Peak Pattern</h3>
+          <div style="display:flex;flex-direction:column;gap:5px;margin:10px 0;">
+            <div class="arrow-box"><span style="background:var(--navy);color:white;padding:2px 8px;border-radius:2px;font-family:'DM Mono',monospace;font-size:9px;">T+0</span><span class="arrow">→</span><span>Local departs</span></div>
+            <div class="arrow-box"><span style="background:var(--blue-mid);color:white;padding:2px 8px;border-radius:2px;font-family:'DM Mono',monospace;font-size:9px;">T+3</span><span class="arrow">→</span><span><strong>Express follows</strong> — 3 min gap</span></div>
+            <div class="arrow-box"><span style="background:var(--gray-400);color:white;padding:2px 8px;border-radius:2px;font-family:'DM Mono',monospace;font-size:9px;">T+5</span><span class="arrow">→</span><span>Next Local slot <em>dropped</em></span></div>
+            <div class="arrow-box"><span style="background:var(--navy);color:white;padding:2px 8px;border-radius:2px;font-family:'DM Mono',monospace;font-size:9px;">T+9</span><span class="arrow">→</span><span>Next Local departs</span></div>
+          </div>
+        </div>
+        <div>
+          <h2>Operational Considerations</h2>
+          <ul class="num-list">
+            <li><div class="num">①</div><div><strong>Track Conflicts</strong> — No passing loops. CBTC holds trains if spacing closes dangerously.</div></li>
+            <li><div class="num">②</div><div><strong>Headway Impact</strong> — If every 5th train is express, local headway increases. Mitigated by restricting express to off-peak only in Phase 2.</div></li>
+            <li><div class="num">③</div><div><strong>Rolling Stock</strong> — No new trains required. Same 6-car sets. Depot scheduling changes only.</div></li>
+            <li><div class="num">④</div><div><strong>Signalling</strong> — CBTC installed. Mixed-traffic mode needs testing. Padding stops at Yamuna Bank recommended.</div></li>
+            <li><div class="num">⑤</div><div><strong>Passenger Flow</strong> — Skipped stations may see crowding shift to local trains. Load monitoring required post-launch.</div></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 6-7: FINANCIAL -->
+    <div class="page inner" id="p-financial">
+      <div class="page-header">
+        <span class="page-header-title">Financial Analysis</span>
+        <span class="page-num">p. 6–7</span>
+      </div>
+      <div class="route-wrap" style="padding:18px;">
+        <div class="route-wrap-label">10-Year NPV Sensitivity by Discount Rate (₹ Millions)</div>
+        <svg viewBox="0 0 560 140" xmlns="http://www.w3.org/2000/svg" style="width:100%;">
+          <line x1="80" y1="10" x2="80" y2="110" stroke="#D1DCE8" stroke-width="1"/>
+          <line x1="80" y1="110" x2="540" y2="110" stroke="#D1DCE8" stroke-width="1"/>
+          <line x1="80" y1="72" x2="540" y2="72" stroke="#EEF2F7" stroke-width="1" stroke-dasharray="3,3"/>
+          <line x1="80" y1="40" x2="540" y2="40" stroke="#EEF2F7" stroke-width="1" stroke-dasharray="3,3"/>
+          <line x1="80" y1="10" x2="540" y2="10" stroke="#EEF2F7" stroke-width="1" stroke-dasharray="3,3"/>
+          <text x="75" y="114" font-family="DM Mono,monospace" font-size="8" fill="#7A93B0" text-anchor="end">0</text>
+          <text x="75" y="94" font-family="DM Mono,monospace" font-size="8" fill="#7A93B0" text-anchor="end">1000</text>
+          <text x="75" y="74" font-family="DM Mono,monospace" font-size="8" fill="#7A93B0" text-anchor="end">2000</text>
+          <text x="75" y="54" font-family="DM Mono,monospace" font-size="8" fill="#7A93B0" text-anchor="end">3000</text>
+          <text x="75" y="34" font-family="DM Mono,monospace" font-size="8" fill="#7A93B0" text-anchor="end">4000</text>
+          <text x="75" y="14" font-family="DM Mono,monospace" font-size="8" fill="#7A93B0" text-anchor="end">5000</text>
+          <rect x="120" y="5" width="40" height="105" fill="#0D1F3C" rx="2" opacity="0.85"/>
+          <rect x="120" y="85" width="40" height="25" fill="#E63946" rx="2"/>
+          <text x="140" y="2" font-family="DM Mono,monospace" font-size="8" fill="#0D1F3C" text-anchor="middle">₹5,250M</text>
+          <text x="140" y="122" font-family="DM Mono,monospace" font-size="9" fill="#334155" text-anchor="middle">6%</text>
+          <line x1="115" y1="25" x2="165" y2="25" stroke="#4A9FD4" stroke-width="1.5" stroke-dasharray="4,2"/>
+          <text x="168" y="28" font-family="DM Mono,monospace" font-size="8" fill="#4A9FD4">NPV +₹4,250M</text>
+          <rect x="230" y="25" width="40" height="85" fill="#1A4B8C" rx="2" opacity="0.85"/>
+          <rect x="230" y="85" width="40" height="25" fill="#E63946" rx="2"/>
+          <text x="250" y="22" font-family="DM Mono,monospace" font-size="8" fill="#1A4B8C" text-anchor="middle">₹4,250M</text>
+          <text x="250" y="122" font-family="DM Mono,monospace" font-size="9" fill="#334155" text-anchor="middle">8% (base)</text>
+          <line x1="225" y1="45" x2="275" y2="45" stroke="#4A9FD4" stroke-width="1.5" stroke-dasharray="4,2"/>
+          <text x="278" y="48" font-family="DM Mono,monospace" font-size="8" fill="#4A9FD4">NPV +₹3,250M</text>
+          <rect x="340" y="44" width="40" height="66" fill="#2B6CB0" rx="2" opacity="0.85"/>
+          <rect x="340" y="85" width="40" height="25" fill="#E63946" rx="2"/>
+          <text x="360" y="41" font-family="DM Mono,monospace" font-size="8" fill="#2B6CB0" text-anchor="middle">₹3,300M</text>
+          <text x="360" y="122" font-family="DM Mono,monospace" font-size="9" fill="#334155" text-anchor="middle">10%</text>
+          <line x1="335" y1="64" x2="385" y2="64" stroke="#4A9FD4" stroke-width="1.5" stroke-dasharray="4,2"/>
+          <text x="388" y="67" font-family="DM Mono,monospace" font-size="8" fill="#4A9FD4">NPV +₹2,300M</text>
+          <rect x="120" y="132" width="10" height="6" fill="#0D1F3C"/>
+          <text x="134" y="138" font-family="DM Mono,monospace" font-size="7.5" fill="#334155">PV Benefits</text>
+          <rect x="210" y="132" width="10" height="6" fill="#E63946"/>
+          <text x="224" y="138" font-family="DM Mono,monospace" font-size="7.5" fill="#334155">CapEx (~₹1,000M)</text>
+          <line x1="310" y1="135" x2="325" y2="135" stroke="#4A9FD4" stroke-width="1.5" stroke-dasharray="4,2"/>
+          <text x="328" y="138" font-family="DM Mono,monospace" font-size="7.5" fill="#334155">Net NPV</text>
+        </svg>
+      </div>
+      <div class="two-col" style="margin-top:14px;">
+        <div>
+          <h3>Ridership Baseline</h3>
+          <p>Total annual ridership: 235.8 Cr (2025)<br>Corridor share: 15–30% of total<br>Modelling base: 100,000 long-haul trips/day (Dwarka ↔ Noida)</p>
+          <h3>Passenger-Hours Saved</h3>
+          <table>
+            <thead><tr><th>Uptake</th><th>Annual Riders</th><th>Hours Saved/yr</th></tr></thead>
+            <tbody>
+              <tr><td>10%</td><td>25 lakh</td><td>10 lakh hrs</td></tr>
+              <tr class="hl"><td>25% (base)</td><td>62.5 lakh</td><td>25 lakh hrs</td></tr>
+              <tr><td>50%</td><td>125 lakh</td><td>50 lakh hrs</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <h3>Value of Time (@ ₹100/hr)</h3>
+          <table>
+            <thead><tr><th>Uptake</th><th>Value/yr</th></tr></thead>
+            <tbody>
+              <tr><td>10%</td><td>₹100 M</td></tr>
+              <tr class="hl"><td>25% (base)</td><td>₹250 M</td></tr>
+              <tr><td>50%</td><td>₹500 M</td></tr>
+            </tbody>
+          </table>
+          <h3>Capital Expenditure</h3>
+          <p>Signalling/CBTC upgrades: <strong>₹50–150 crore</strong><br>No new civil infrastructure required.</p>
+          <h3>Induced Demand</h3>
+          <p>+10% new riders on corridor → ~₹375 Cr/year additional fare revenue</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 8: SOCIAL, EQUITY -->
+    <div class="page inner" id="p-social">
+      <div class="page-header">
+        <span class="page-header-title">Social, Environmental &amp; Equity Impacts</span>
+        <span class="page-num">p. 8</span>
+      </div>
+      <div class="info-grid info-grid-2">
+        <div class="info-box gold"><div class="info-box-title">CO₂ Reduction / Year</div><div class="info-box-val">~142 tonnes</div><div class="info-box-sub">10% of express riders switch from private car</div></div>
+        <div class="info-box"><div class="info-box-title">Emission Saving per Trip</div><div class="info-box-val">~5.7 kg CO₂</div><div class="info-box-sub">Car ~6 kg vs Metro ~0.3 kg per 30 km trip</div></div>
+      </div>
+      <div class="route-wrap" style="padding:16px 18px;margin:10px 0;">
+        <div class="route-wrap-label">CO₂ per 30 km Trip</div>
+        <svg viewBox="0 0 460 80" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:460px;">
+          <rect x="100" y="10" width="300" height="22" fill="#E63946" rx="2"/>
+          <text x="96" y="26" font-family="DM Sans,sans-serif" font-size="10" fill="#334155" text-anchor="end">Car</text>
+          <text x="408" y="26" font-family="DM Mono,monospace" font-size="10" fill="#E63946" font-weight="700">6.0 kg CO₂</text>
+          <rect x="100" y="46" width="15" height="22" fill="#27AE60" rx="2"/>
+          <text x="96" y="62" font-family="DM Sans,sans-serif" font-size="10" fill="#334155" text-anchor="end">Metro</text>
+          <text x="120" y="62" font-family="DM Mono,monospace" font-size="10" fill="#27AE60" font-weight="700">0.3 kg CO₂</text>
+        </svg>
+      </div>
+      <hr/>
+      <h2>Equity Impacts &amp; Mitigations</h2>
+      <div class="callout" style="font-size:13px;"><p>Benefits accrue primarily to long-haul commuters. Short-haul riders at skipped stations lose direct service. This distributional imbalance must be acknowledged in public consultation.</p></div>
+      <div class="two-col">
+        <div>
+          <h3>Concern</h3>
+          <p>Short-haul riders at skipped stations (e.g. Uttam Nagar, Preet Vihar) face longer waits or forced transfers.</p>
+        </div>
+        <div>
+          <h3>Mitigations</h3>
+          <ul class="num-list">
+            <li><div class="num">①</div><div>Min 1 all-stop local per 3 expresses</div></li>
+            <li><div class="num">②</div><div>Feeder buses at skipped stations — est. ₹20–50 M/year</div></li>
+            <li><div class="num">③</div><div>Clear platform signage and bilingual PA announcements</div></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 5a: NYC & SHANGHAI -->
+    <div class="page inner" id="p-world-a">
+      <div class="page-header">
+        <span class="page-header-title">Skip-Stop Express: Proven in Global Metro Networks</span>
+        <span class="page-num">p. 5a</span>
+      </div>
+      <p>Skip-stop and express metro operation is not experimental. Three of the world's busiest transit systems have run mixed local-express services for decades.</p>
+      <div style="background:var(--gray-100);border-radius:5px;padding:16px 18px;margin-bottom:12px;">
+        <div class="city-header">
+          <div class="city-flag">🇺🇸</div>
+          <div>
+            <div class="city-name">New York City — MTA Subway</div>
+            <div class="city-subtitle">Express service since 1904 · A/C/E · 1/2/3 · 4/5/6 · B/D/F/M lines</div>
+          </div>
+        </div>
+        <div class="two-col">
+          <div>
+            <p style="font-size:12px;">New York's subway is the oldest and most extensive express-local system in the world. Most major lines run on <strong>4-track rights-of-way</strong>: two tracks for express (skipping ~60–70% of stops), two for local. At "express stops," cross-platform transfers take seconds.</p>
+            <p style="font-size:12px;">On the Lexington Avenue Line (4/5/6), the express cuts 42 stops to 20, reducing end-to-end from ~55 min to ~32 min — a <strong>42% time reduction</strong>.</p>
+            <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;">
+              <span class="stat-pill">3.7M riders/day</span>
+              <span class="stat-pill blue">4-track corridors</span>
+              <span class="stat-pill red">~42% faster express</span>
+              <span class="stat-pill green">Cross-platform transfer</span>
+            </div>
+          </div>
+          <div>
+            <div class="route-wrap" style="padding:12px 14px;background:white;">
+              <div class="route-wrap-label">4-track layout (NYC standard)</div>
+              <svg viewBox="0 0 220 90" xmlns="http://www.w3.org/2000/svg" style="width:100%;">
+                <line x1="10" y1="20" x2="210" y2="20" stroke="#7A93B0" stroke-width="2"/>
+                <text x="8" y="17" font-family="DM Mono,monospace" font-size="7" fill="#7A93B0">LOCAL →</text>
+                <g fill="#7A93B0">
+                  <circle cx="30" cy="20" r="3"/><circle cx="60" cy="20" r="3"/><circle cx="90" cy="20" r="3"/>
+                  <circle cx="120" cy="20" r="3"/><circle cx="150" cy="20" r="3"/><circle cx="180" cy="20" r="3"/><circle cx="210" cy="20" r="3"/>
+                </g>
+                <line x1="10" y1="50" x2="210" y2="50" stroke="#E63946" stroke-width="2.5"/>
+                <text x="8" y="47" font-family="DM Mono,monospace" font-size="7" fill="#E63946">EXPRESS →</text>
+                <circle cx="30" cy="50" r="5" fill="#E63946"/>
+                <circle cx="120" cy="50" r="5" fill="#E63946"/>
+                <circle cx="210" cy="50" r="5" fill="#E63946"/>
+                <circle cx="60" cy="50" r="3" fill="none" stroke="#D1DCE8" stroke-width="1.5"/>
+                <circle cx="90" cy="50" r="3" fill="none" stroke="#D1DCE8" stroke-width="1.5"/>
+                <circle cx="150" cy="50" r="3" fill="none" stroke="#D1DCE8" stroke-width="1.5"/>
+                <circle cx="180" cy="50" r="3" fill="none" stroke="#D1DCE8" stroke-width="1.5"/>
+                <line x1="120" y1="23" x2="120" y2="47" stroke="#27AE60" stroke-width="1.5" stroke-dasharray="2,2"/>
+                <text x="124" y="38" font-family="DM Mono,monospace" font-size="7" fill="#27AE60">xfer</text>
+                <text x="10" y="75" font-family="DM Mono,monospace" font-size="7" fill="#7A93B0">Cross-platform transfer at shared stops</text>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="takeaway-box"><strong>Delhi takeaway:</strong> NYC proves express services generate strong ridership on long, dense corridors. Delhi's 2-track constraint means a sequential model delivers ~60–70% of the benefit at far lower capital cost.</div>
+      </div>
+      <div style="background:var(--gray-100);border-radius:5px;padding:16px 18px;">
+        <div class="city-header">
+          <div class="city-flag">🇨🇳</div>
+          <div>
+            <div class="city-name">Shanghai — Metro Lines 16 &amp; 11</div>
+            <div class="city-subtitle">Express service since 2013 · 2-track skip-stop · most analogous to Delhi Blue Line</div>
+          </div>
+        </div>
+        <div class="two-col">
+          <div>
+            <p style="font-size:12px;"><strong>Line 16</strong> runs on only <strong>2 tracks</strong> — identical infrastructure constraint to Delhi's Blue Line. Express serves 4 of 13 stations, running <em>between</em> local departures exactly as proposed for Delhi.</p>
+            <p style="font-size:12px;">Local: ~53 min. Express: ~35 min. <strong>Time saved: 18 min (34%).</strong></p>
+            <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;">
+              <span class="stat-pill">2-track shared</span>
+              <span class="stat-pill red">34% faster</span>
+              <span class="stat-pill blue">15-min express headway</span>
+              <span class="stat-pill green">10+ years proven</span>
+            </div>
+          </div>
+          <div>
+            <div class="route-wrap" style="padding:12px;background:white;">
+              <div class="route-wrap-label">Shanghai L16 — 2-track express pattern</div>
+              <svg viewBox="0 0 220 60" xmlns="http://www.w3.org/2000/svg" style="width:100%;">
+                <line x1="10" y1="30" x2="210" y2="30" stroke="#1A4B8C" stroke-width="3"/>
+                <g fill="#7A93B0">
+                  <circle cx="10" cy="30" r="3.5"/><circle cx="38" cy="30" r="3.5"/><circle cx="66" cy="30" r="3.5"/>
+                  <circle cx="94" cy="30" r="3.5"/><circle cx="122" cy="30" r="3.5"/><circle cx="150" cy="30" r="3.5"/>
+                  <circle cx="178" cy="30" r="3.5"/><circle cx="210" cy="30" r="3.5"/>
+                </g>
+                <circle cx="10" cy="30" r="6" fill="#E63946"/>
+                <circle cx="66" cy="30" r="6" fill="#E63946"/>
+                <circle cx="150" cy="30" r="6" fill="#E63946"/>
+                <circle cx="210" cy="30" r="6" fill="#E63946"/>
+                <text x="10" y="14" font-family="DM Mono,monospace" font-size="7" fill="#E63946" text-anchor="middle">Express</text>
+                <text x="66" y="14" font-family="DM Mono,monospace" font-size="7" fill="#E63946" text-anchor="middle">Express</text>
+                <text x="150" y="14" font-family="DM Mono,monospace" font-size="7" fill="#E63946" text-anchor="middle">Express</text>
+                <text x="210" y="14" font-family="DM Mono,monospace" font-size="7" fill="#E63946" text-anchor="middle">Express</text>
+                <text x="38" y="50" font-family="DM Mono,monospace" font-size="7" fill="#D1DCE8" text-anchor="middle">local</text>
+                <text x="94" y="50" font-family="DM Mono,monospace" font-size="7" fill="#D1DCE8" text-anchor="middle">local</text>
+                <text x="178" y="50" font-family="DM Mono,monospace" font-size="7" fill="#D1DCE8" text-anchor="middle">local</text>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="takeaway-box"><strong>Delhi takeaway:</strong> Shanghai Line 16 is the direct proof of concept. 2-track skip-stop works. Delhi's higher stop-count means shorter intervals between express stops — actually easier to timetable than Line 16.</div>
+      </div>
+    </div>
+
+    <!-- PAGE 5b: TOKYO + SYNTHESIS -->
+    <div class="page inner" id="p-world-b">
+      <div class="page-header">
+        <span class="page-header-title">Tokyo's Tiered Express System &amp; Global Synthesis</span>
+        <span class="page-num">p. 5b</span>
+      </div>
+      <div style="background:var(--gray-100);border-radius:5px;padding:16px 18px;margin-bottom:12px;">
+        <div class="city-header">
+          <div class="city-flag">🇯🇵</div>
+          <div>
+            <div class="city-name">Tokyo — Keio, Odakyu, Tobu &amp; Tokyo Metro</div>
+            <div class="city-subtitle">Multi-tier express since 1940s · 3–5 service grades on single corridors</div>
+          </div>
+        </div>
+        <div class="two-col">
+          <div>
+            <p style="font-size:12px;">Tokyo's private rail operators pioneered <strong>multi-tiered express</strong> — running 3 to 5 different service grades on the same 2-track corridor simultaneously. Keio Line offers: Local → Semi-Express → Express → Limited Express → Special Express, all on the same tracks at peak hours.</p>
+            <p style="font-size:12px;">The <strong>Odakyu Line</strong> uses <em>refuge sidings</em> — short dead-end platforms where a slower train steps aside to let a faster one overtake. Delhi has no sidings, but the proposed 2-in-gap model avoids this need.</p>
+            <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;">
+              <span class="stat-pill">3–5 service grades</span>
+              <span class="stat-pill red">Up to 50% faster (ltd. express)</span>
+              <span class="stat-pill blue">2-track primary</span>
+              <span class="stat-pill green">Since 1940s</span>
+            </div>
+          </div>
+          <div>
+            <div class="route-wrap" style="padding:12px;background:white;">
+              <div class="route-wrap-label">Service grade pyramid — Keio Line</div>
+              <svg viewBox="0 0 220 100" xmlns="http://www.w3.org/2000/svg" style="width:100%;">
+                <rect x="5" y="5" width="210" height="14" fill="#7A93B0" rx="2"/><text x="10" y="16" font-family="DM Mono,monospace" font-size="8" fill="white">LOCAL — all 32 stops</text>
+                <rect x="15" y="22" width="180" height="14" fill="#2B6CB0" rx="2"/><text x="20" y="33" font-family="DM Mono,monospace" font-size="8" fill="white">SEMI-EXPRESS — 24 stops</text>
+                <rect x="30" y="39" width="150" height="14" fill="#1A4B8C" rx="2"/><text x="35" y="50" font-family="DM Mono,monospace" font-size="8" fill="white">EXPRESS — 17 stops</text>
+                <rect x="55" y="56" width="110" height="14" fill="#0D1F3C" rx="2"/><text x="60" y="67" font-family="DM Mono,monospace" font-size="8" fill="white">LIMITED EXP — 9 stops</text>
+                <rect x="82" y="73" width="56" height="14" fill="#E63946" rx="2"/><text x="87" y="84" font-family="DM Mono,monospace" font-size="8" fill="white">SPECIAL — 4</text>
+                <text x="5" y="98" font-family="DM Mono,monospace" font-size="7" fill="#7A93B0">Local: ~75min | Special Exp: ~40min | Shinjuku→Hashimoto 37km</text>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="takeaway-box"><strong>Delhi takeaway:</strong> Tokyo proves multiple service grades on a corridor massively increase total passenger throughput per track-km. Starting with a single express tier is the conservative, proven entry point. The tiered model is the long-term aspiration.</div>
+      </div>
+      <h2>Global Synthesis</h2>
+      <table style="margin-top:8px;">
+        <thead>
+          <tr><th>City / System</th><th>Tracks</th><th>Grades</th><th>Time saving</th><th>Since</th><th>Key lesson</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>New York</strong> — Lex 4/5/6</td><td>4-track</td><td>2</td><td>~42%</td><td>1904</td><td>4-track gives max benefit; cross-platform xfer critical</td></tr>
+          <tr><td><strong>Shanghai</strong> — Line 16</td><td>2-track</td><td>2</td><td>~34%</td><td>2013</td><td>2-track skip-stop works; gap sequencing reliable</td></tr>
+          <tr><td><strong>Tokyo</strong> — Keio/Odakyu</td><td>2–4</td><td>3–5</td><td>Up to 50%</td><td>1948</td><td>Multiple tiers unlock throughput</td></tr>
+          <tr><td><strong>London</strong> — Overground</td><td>2–4</td><td>2</td><td>~20–25%</td><td>2007</td><td>Rebranding drove 170% ridership increase in 5 years</td></tr>
+          <tr class="hl"><td><strong>Delhi (proposed)</strong> — Blue Line</td><td>2-track</td><td>2</td><td>~28%</td><td>2026→</td><td>Closest model: Shanghai L16. Gap sequencing. Zero new tracks.</td></tr>
+        </tbody>
+      </table>
+      <div class="info-grid info-grid-3" style="margin-top:14px;">
+        <div class="info-box dark"><div class="info-box-title">Shared finding</div><div style="font-size:12px;color:white;margin-top:4px;line-height:1.5;">All cities saw <strong style="color:var(--gold);">ridership growth</strong> after express launch — not just redistribution. Faster service attracts new users from private transport.</div></div>
+        <div class="info-box"><div class="info-box-title">Equity finding</div><div style="font-size:12px;color:var(--gray-700);margin-top:4px;line-height:1.5;">All three report short-haul rider complaints at launch, resolving within 6–12 months as communication improves and feeder services bed in.</div></div>
+        <div class="info-box accent"><div class="info-box-title">No system reversed course</div><div style="font-size:12px;color:var(--gray-700);margin-top:4px;line-height:1.5;">Zero major systems have permanently discontinued express services after introduction. The service proves its value.</div></div>
+      </div>
+    </div>
+
+    <!-- PAGE 10: ROADMAP -->
+    <div class="page inner" id="p-roadmap">
+      <div class="page-header">
+        <span class="page-header-title">Implementation Roadmap</span>
+        <span class="page-num">p. 10</span>
+      </div>
+      <div class="route-wrap" style="padding:16px 18px;">
+        <div class="route-wrap-label">18-Month Deployment Timeline</div>
+        <svg viewBox="0 0 580 120" xmlns="http://www.w3.org/2000/svg" style="width:100%;">
+          <g font-family="DM Mono,monospace" font-size="8" fill="#7A93B0">
+            <text x="105" y="12" text-anchor="middle">M1</text><text x="137" y="12" text-anchor="middle">M2</text><text x="169" y="12" text-anchor="middle">M3</text>
+            <text x="201" y="12" text-anchor="middle">M4</text><text x="233" y="12" text-anchor="middle">M5</text><text x="265" y="12" text-anchor="middle">M6</text>
+            <text x="297" y="12" text-anchor="middle">M7</text><text x="329" y="12" text-anchor="middle">M8</text><text x="361" y="12" text-anchor="middle">M9</text>
+            <text x="393" y="12" text-anchor="middle">M10</text><text x="425" y="12" text-anchor="middle">M12</text>
+            <text x="457" y="12" text-anchor="middle">M14</text><text x="489" y="12" text-anchor="middle">M16</text><text x="521" y="12" text-anchor="middle">M18</text>
+          </g>
+          <line x1="89" y1="15" x2="89" y2="110" stroke="#EEF2F7" stroke-width="1"/>
+          <line x1="89" y1="110" x2="540" y2="110" stroke="#EEF2F7" stroke-width="1"/>
+          <g font-family="DM Sans,sans-serif" font-size="9.5" fill="#334155">
+            <text x="85" y="35" text-anchor="end">Timetable Design</text>
+            <text x="85" y="55" text-anchor="end">CBTC Config</text>
+            <text x="85" y="75" text-anchor="end">O/D Survey</text>
+            <text x="85" y="95" text-anchor="end">Off-peak Pilot</text>
+            <text x="85" y="113" text-anchor="end">Full Deployment</text>
+          </g>
+          <rect x="89" y="24" width="192" height="16" fill="#0D1F3C" rx="2"/>
+          <rect x="89" y="44" width="160" height="16" fill="#0D1F3C" rx="2"/>
+          <rect x="89" y="64" width="192" height="16" fill="#0D1F3C" rx="2"/>
+          <rect x="281" y="84" width="96" height="16" fill="#2B6CB0" rx="2"/>
+          <rect x="377" y="103" width="163" height="12" fill="#E63946" rx="2"/>
+          <text x="91" y="35" font-family="DM Mono,monospace" font-size="8" fill="white">PHASE 1 — Design &amp; Approvals</text>
+          <text x="283" y="95" font-family="DM Mono,monospace" font-size="8" fill="white">PHASE 2</text>
+          <text x="379" y="112" font-family="DM Mono,monospace" font-size="8" fill="white">PHASE 3 — Full Deployment</text>
+        </svg>
+      </div>
+      <div class="three-col" style="margin-top:16px;">
+        <div class="phase-card">
+          <div class="phase-label">Phase 1</div>
+          <div class="phase-title">Design &amp; Approvals</div>
+          <div class="phase-months">Months 1–6</div>
+          <ul class="phase-items">
+            <li>Detailed timetable design &amp; simulation</li>
+            <li>CBTC configuration scoping</li>
+            <li>Stakeholder &amp; regulatory approvals</li>
+            <li>Passenger O/D survey conducted</li>
+          </ul>
+        </div>
+        <div class="phase-card p2">
+          <div class="phase-label">Phase 2</div>
+          <div class="phase-title">Off-Peak Pilot</div>
+          <div class="phase-months">Months 7–9</div>
+          <ul class="phase-items">
+            <li>1 express train/hr on weekends</li>
+            <li>Journey time &amp; crowding data collected</li>
+            <li>On-time performance tracked</li>
+            <li>Post-pilot passenger survey</li>
+          </ul>
+        </div>
+        <div class="phase-card p3">
+          <div class="phase-label">Phase 3</div>
+          <div class="phase-title">Full Deployment</div>
+          <div class="phase-months">Months 10–18</div>
+          <ul class="phase-items">
+            <li>Peak-hour express service launched</li>
+            <li>Continuous KPI monitoring</li>
+            <li>Load factors per station</li>
+            <li>Induced ridership tracking</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 11: RISKS -->
+    <div class="page inner" id="p-risks">
+      <div class="page-header">
+        <span class="page-header-title">Risks &amp; Mitigations</span>
+        <span class="page-num">p. 11</span>
+      </div>
+      <table>
+        <thead><tr><th>Risk</th><th>Likelihood</th><th>Mitigation</th></tr></thead>
+        <tbody>
+          <tr><td>Express catches local train</td><td><span class="risk-med">Medium</span></td><td>CBTC software override; schedule padding</td></tr>
+          <tr><td>Local headway increases, overcrowding</td><td><span class="risk-med">Medium</span></td><td>Add peak locals; monitor load factors</td></tr>
+          <tr><td>Skipped station rider complaints</td><td><span class="risk-high">High</span></td><td>Feeder buses; guaranteed local frequency</td></tr>
+          <tr><td>Regulatory approval delays</td><td><span class="risk-low">Low–Med</span></td><td>Early Ministry engagement in Phase 1</td></tr>
+          <tr><td>Schedule drift during operations</td><td><span class="risk-med">Medium</span></td><td>Padding stops at Yamuna Bank junction</td></tr>
+          <tr><td>Low rider uptake of express</td><td><span class="risk-low">Low</span></td><td>Pre-launch communication campaign</td></tr>
+          <tr><td>Safety — faster trains at platforms</td><td><span class="risk-low">Low</span></td><td>Operator training; platform screen doors</td></tr>
+          <tr><td>Negative public reaction</td><td><span class="risk-med">Medium</span></td><td>"Express Trial" branding; feedback channels</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:14px;"><strong>Overall Assessment:</strong> Operational risks are manageable with existing CBTC infrastructure. No risk category is assessed as High likelihood + High impact simultaneously. Primary success factor: robust timetable design before any pilot is launched.</p>
+    </div>
+
+    <!-- PAGE 12: CONCLUSION -->
+    <div class="page inner" id="p-conclusion">
+      <div class="page-header">
+        <span class="page-header-title">Conclusion &amp; Recommendations</span>
+        <span class="page-num">p. 12</span>
+      </div>
+      <div class="callout"><p>An express service on this corridor is operationally feasible, financially compelling, and achievable without new infrastructure.</p></div>
+      <h2 style="margin-top:20px;">Key Findings</h2>
+      <ul class="num-list">
+        <li><div class="num">①</div><div>Time savings of <strong>19–25 minutes</strong> achievable with a 25–30 stop express pattern.</div></li>
+        <li><div class="num">②</div><div>No new tracks, platforms, or rolling stock required — existing CBTC can be adapted.</div></li>
+        <li><div class="num">③</div><div>Capital expenditure estimated at <strong>₹50–150 crore</strong> against a 10-year NPV of <strong>₹3,250 million</strong>.</div></li>
+        <li><div class="num">④</div><div>~142 tonnes of CO₂/year saved if 10% of riders shift from private cars.</div></li>
+        <li><div class="num">⑤</div><div>Equity concerns are real but mitigable through guaranteed local frequency and feeder buses.</div></li>
+        <li><div class="num">⑥</div><div>NYC, Shanghai, Tokyo, and London all prove the model works. No city has reversed course once launched.</div></li>
+      </ul>
+      <hr/>
+      <h2>Recommendations</h2>
+      <div style="display:flex;flex-direction:column;gap:7px;margin-top:4px;">
+        <div class="arrow-box"><span class="arrow">→</span><div><strong>Commission a full simulation study</strong> using actual CBTC headway data (Phase 1).</div></div>
+        <div class="arrow-box"><span class="arrow">→</span><div><strong>Adopt the 25-stop scenario</strong> as baseline for pilot design (best speed/coverage balance).</div></div>
+        <div class="arrow-box"><span class="arrow">→</span><div><strong>Run an off-peak weekend pilot</strong> before any peak-hour rollout.</div></div>
+        <div class="arrow-box"><span class="arrow">→</span><div><strong>Conduct passenger O/D survey</strong> in parallel with Phase 1 design work.</div></div>
+        <div class="arrow-box"><span class="arrow">→</span><div><strong>Establish a public communication plan</strong> before pilot launch to manage rider expectations.</div></div>
+      </div>
+      <div class="disclaimer">Disclaimer: This is an independent analysis based on publicly available data. Not affiliated with or endorsed by any official transport authority. All cost and ridership figures are indicative.</div>
+    </div>
+
+    <!-- SURVEY RESULTS SECTION -->
+    <div id="survey-results-section">
+      <div class="results-header">
+        <div>
+          <div class="results-header-title">Reader Survey Results</div>
+          <div class="results-header-sub">Live responses from readers of this report</div>
+        </div>
+        <div id="results-count" style="margin-left:auto;background:var(--accent);color:white;font-family:'Playfair Display',serif;font-size:28px;font-weight:700;padding:10px 20px;border-radius:4px;text-align:center;">
+          <div id="total-count">—</div>
+          <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;opacity:0.8;">Total Responses</div>
+        </div>
+      </div>
+      <div class="results-body">
+        <div id="results-content">
+          <div class="results-loading">Loading responses...</div>
+        </div>
+        <div class="opinions-section" id="opinions-section" style="display:none;">
+          <div class="opinions-title">Reader Opinions</div>
+          <div class="opinions-sub" id="opinions-count">Loading opinions...</div>
+          <div class="opinions-feed" id="opinions-feed"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BACK COVER -->
+    <div class="back-cover">
+      <div class="cover-left-bar"></div>
+      <div style="text-align:center;padding:36px;">
+        <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--blue-light);margin-bottom:24px;">Urban Transport Analysis · 2025</div>
+        <div style="font-family:'Playfair Display',serif;font-size:36px;font-weight:700;color:var(--white);line-height:1.15;margin-bottom:8px;">Blue "Express" Line</div>
+        <div style="font-family:'Playfair Display',serif;font-size:18px;color:var(--blue-light);margin-bottom:32px;">in the Delhi Metro Network</div>
+        <div style="width:50px;height:3px;background:var(--accent);margin:0 auto 32px;"></div>
+        <p style="color:var(--gray-400);font-size:12px;max-width:280px;margin:0 auto;line-height:1.8;">Independent Urban Transport Analysis<br>Based on publicly available data<br>Not affiliated with any official authority</p>
+      </div>
+    </div>
+
+  </div><!-- /report-col -->
+
+
+  <!-- ══════════════════════════════════
+       SIDEBAR
+  ══════════════════════════════════ -->
+  <div class="sidebar">
+
+    <!-- SURVEY WIDGET -->
+    <div class="survey-widget">
+      <div class="survey-header">
+        <div class="survey-header-dot"></div>
+        <div>
+          <div class="survey-header-text">Reader Survey</div>
+          <div class="survey-header-sub">Share your views · Takes 60 sec</div>
+        </div>
+      </div>
+
+      <div class="survey-body" id="survey-body">
+
+        <!-- Progress -->
+        <div class="survey-progress">
+          <div class="survey-progress-label"><span id="progress-label">Question 1 of 4</span></div>
+          <div class="survey-progress-bar"><div class="survey-progress-fill" id="progress-fill" style="width:25%"></div></div>
+        </div>
+
+        <!-- Step 1 -->
+        <div class="survey-step active" id="step-1">
+          <div class="survey-q">
+            <span class="survey-q-num">Question 01</span>
+            Do you commute on the Delhi Metro Blue Line?
+          </div>
+          <div class="survey-options">
+            <label class="survey-option" onclick="selectOption(1, 'Yes — daily', this)">
+              <div class="survey-option-dot"></div> Yes — daily
+            </label>
+            <label class="survey-option" onclick="selectOption(1, 'Yes — occasionally', this)">
+              <div class="survey-option-dot"></div> Yes — occasionally
+            </label>
+            <label class="survey-option" onclick="selectOption(1, 'No — other line', this)">
+              <div class="survey-option-dot"></div> No — other line
+            </label>
+            <label class="survey-option" onclick="selectOption(1, 'No — non-commuter', this)">
+              <div class="survey-option-dot"></div> No — non-commuter
+            </label>
+          </div>
+          <div class="survey-nav">
+            <button class="btn-next" id="next-1" onclick="goTo(2)" disabled>Next →</button>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="survey-step" id="step-2">
+          <div class="survey-q">
+            <span class="survey-q-num">Question 02</span>
+            Would you use an express service if it saved 20+ minutes?
+          </div>
+          <div class="survey-options">
+            <label class="survey-option" onclick="selectOption(2, 'Definitely yes', this)">
+              <div class="survey-option-dot"></div> Definitely yes
+            </label>
+            <label class="survey-option" onclick="selectOption(2, 'Probably yes', this)">
+              <div class="survey-option-dot"></div> Probably yes
+            </label>
+            <label class="survey-option" onclick="selectOption(2, 'Depends on the stops', this)">
+              <div class="survey-option-dot"></div> Depends on the stops
+            </label>
+            <label class="survey-option" onclick="selectOption(2, 'No — I need all stops', this)">
+              <div class="survey-option-dot"></div> No — I need all stops
+            </label>
+          </div>
+          <div class="survey-nav">
+            <button class="btn-back" onclick="goTo(1)">← Back</button>
+            <button class="btn-next" id="next-2" onclick="goTo(3)" disabled>Next →</button>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="survey-step" id="step-3">
+          <div class="survey-q">
+            <span class="survey-q-num">Question 03</span>
+            What's your biggest concern about express service?
+          </div>
+          <div class="survey-options">
+            <label class="survey-option" onclick="selectOption(3, 'My station gets skipped', this)">
+              <div class="survey-option-dot"></div> My station gets skipped
+            </label>
+            <label class="survey-option" onclick="selectOption(3, 'Overcrowding on locals', this)">
+              <div class="survey-option-dot"></div> Overcrowding on locals
+            </label>
+            <label class="survey-option" onclick="selectOption(3, 'Longer local wait times', this)">
+              <div class="survey-option-dot"></div> Longer local wait times
+            </label>
+            <label class="survey-option" onclick="selectOption(3, 'No major concern', this)">
+              <div class="survey-option-dot"></div> No major concern — sounds great
+            </label>
+          </div>
+          <div class="survey-nav">
+            <button class="btn-back" onclick="goTo(2)">← Back</button>
+            <button class="btn-next" id="next-3" onclick="goTo(4)" disabled>Next →</button>
+          </div>
+        </div>
+
+        <!-- Step 4 — Open question -->
+        <div class="survey-step" id="step-4">
+          <div class="survey-q">
+            <span class="survey-q-num">Question 04</span>
+            Your take on the Blue Line Express — anything the report missed?
+          </div>
+          <input type="text" class="survey-input" id="respondent-name" placeholder="Your name (optional)" maxlength="60"/>
+          <textarea class="survey-textarea" id="open-opinion" placeholder="Share your opinion, concerns, or ideas... (optional)" maxlength="500"></textarea>
+          <div style="font-size:10px;color:var(--gray-400);text-align:right;margin-top:3px;" id="char-count">500 chars remaining</div>
+          <div class="survey-nav">
+            <button class="btn-back" onclick="goTo(3)">← Back</button>
+            <button class="btn-submit" id="submit-btn" onclick="submitSurvey()">Submit ✓</button>
+          </div>
+        </div>
+
+      </div><!-- /survey-body -->
+
+      <!-- Submitting -->
+      <div class="survey-submitting" id="survey-submitting">
+        <div class="spinner"></div>
+        Submitting your response...
+      </div>
+
+      <!-- Thank you -->
+      <div class="survey-thanks" id="survey-thanks">
+        <div class="survey-thanks-icon">✅</div>
+        <div class="survey-thanks-title">Thank you!</div>
+        <div class="survey-thanks-sub">Your response has been recorded.<br>See live stats at the bottom of the report.</div>
+      </div>
+
+    </div><!-- /survey-widget -->
+
+    <!-- TOC WIDGET -->
+    <div class="toc-widget">
+      <div class="toc-widget-header">In This Report</div>
+      <div class="toc-widget-body">
+        <a class="toc-link" href="#p-exec">Executive Summary</a>
+        <a class="toc-link" href="#p-network">Network Overview</a>
+        <a class="toc-link" href="#p-ops-a">How It Operates (Core)</a>
+        <a class="toc-link" href="#p-ops-b">Signalling &amp; Fleet</a>
+        <a class="toc-link" href="#p-scenarios">Express Scenarios</a>
+        <a class="toc-link" href="#p-financial">Financial Analysis</a>
+        <a class="toc-link" href="#p-social">Social &amp; Equity</a>
+        <a class="toc-link" href="#p-world-a">NYC &amp; Shanghai</a>
+        <a class="toc-link" href="#p-world-b">Tokyo &amp; Synthesis</a>
+        <a class="toc-link" href="#p-roadmap">Roadmap</a>
+        <a class="toc-link" href="#p-risks">Risks</a>
+        <a class="toc-link" href="#p-conclusion">Conclusion</a>
+        <a class="toc-link" href="#survey-results-section" style="color:var(--accent);border-left-color:var(--accent);">📊 Live Survey Results</a>
+      </div>
+    </div>
+
+  </div><!-- /sidebar -->
+
+</div><!-- /shell -->
+
+
+<script>
+// ─── SURVEY STATE ───
+const answers = { q1: null, q2: null, q3: null, name: '', opinion: '' };
+
+// ─── GOOGLE APPS SCRIPT ENDPOINT ───
+// IMPORTANT: Replace this URL with your deployed Google Apps Script web app URL
+// See SETUP.md for instructions on how to create this
+const APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
+
+function selectOption(step, value, el) {
+  // Clear other selections in this step
+  el.closest('.survey-options').querySelectorAll('.survey-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  answers['q' + step] = value;
+  document.getElementById('next-' + step).disabled = false;
+}
+
+function goTo(step) {
+  document.querySelectorAll('.survey-step').forEach(s => s.classList.remove('active'));
+  document.getElementById('step-' + step).classList.add('active');
+  const labels = ['', 'Question 1 of 4', 'Question 2 of 4', 'Question 3 of 4', 'Your opinion (optional)'];
+  const pcts = ['', '25%', '50%', '75%', '100%'];
+  document.getElementById('progress-label').textContent = labels[step];
+  document.getElementById('progress-fill').style.width = pcts[step];
+}
+
+// Char counter for open question
+document.getElementById('open-opinion').addEventListener('input', function() {
+  const remaining = 500 - this.value.length;
+  document.getElementById('char-count').textContent = remaining + ' chars remaining';
+});
+
+async function submitSurvey() {
+  answers.name = document.getElementById('respondent-name').value.trim();
+  answers.opinion = document.getElementById('open-opinion').value.trim();
+
+  // Show submitting state
+  document.getElementById('survey-body').style.display = 'none';
+  document.getElementById('survey-submitting').classList.add('show');
+
+  const payload = {
+    timestamp: new Date().toISOString(),
+    commuter: answers.q1 || '—',
+    would_use: answers.q2 || '—',
+    concern: answers.q3 || '—',
+    name: answers.name || 'Anonymous',
+    opinion: answers.opinion || ''
+  };
+
+  try {
+    if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== 'YOUR_APPS_SCRIPT_URL_HERE') {
+      await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    }
+    // Store locally for immediate display
+    const stored = JSON.parse(localStorage.getItem('blueExpressResponses') || '[]');
+    stored.push(payload);
+    localStorage.setItem('blueExpressResponses', JSON.stringify(stored));
+  } catch (e) {
+    console.warn('Submission error:', e);
+  }
+
+  // Show thanks
+  document.getElementById('survey-submitting').classList.remove('show');
+  document.getElementById('survey-thanks').classList.add('show');
+
+  // Refresh results
+  setTimeout(loadResults, 800);
+}
+
+// ─── RESULTS LOADING ───
+async function loadResults() {
+  // Get local responses
+  const local = JSON.parse(localStorage.getItem('blueExpressResponses') || '[]');
+
+  // Try to get from Apps Script (if configured)
+  let all = [...local];
+  if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== 'YOUR_APPS_SCRIPT_URL_HERE') {
+    try {
+      const res = await fetch(APPS_SCRIPT_URL + '?action=get', { method: 'GET' });
+      const data = await res.json();
+      if (data && data.responses) {
+        // Merge, dedup by timestamp
+        const localTs = new Set(local.map(r => r.timestamp));
+        const remoteOnly = data.responses.filter(r => !localTs.has(r.timestamp));
+        all = [...local, ...remoteOnly];
+      }
+    } catch (e) {
+      // Use local only
+    }
+  }
+
+  renderResults(all);
+}
+
+function renderResults(responses) {
+  const total = responses.length;
+  document.getElementById('total-count').textContent = total;
+
+  if (total === 0) {
+    document.getElementById('results-content').innerHTML = '<div class="results-loading" style="padding:30px;">No responses yet — be the first to take the survey!</div>';
+    return;
+  }
+
+  // Tally each question
+  const q1 = tally(responses, 'commuter');
+  const q2 = tally(responses, 'would_use');
+  const q3 = tally(responses, 'concern');
+
+  const colors1 = ['navy', 'blue', 'red', 'green'];
+  const colors2 = ['green', 'blue', 'gold', 'red'];
+  const colors3 = ['red', 'gold', 'blue', 'green'];
+
+  document.getElementById('results-content').innerHTML = `
+    <div class="results-grid">
+      <div class="result-card">
+        <div class="result-card-title">Do you commute on the Blue Line?</div>
+        <div class="result-total">${total} response${total !== 1 ? 's' : ''}</div>
+        ${renderBars(q1, total, colors1)}
+      </div>
+      <div class="result-card">
+        <div class="result-card-title">Would you use the express service?</div>
+        <div class="result-total">${total} response${total !== 1 ? 's' : ''}</div>
+        ${renderBars(q2, total, colors2)}
+      </div>
+      <div class="result-card">
+        <div class="result-card-title">Biggest concern?</div>
+        <div class="result-total">${total} response${total !== 1 ? 's' : ''}</div>
+        ${renderBars(q3, total, colors3)}
+      </div>
+    </div>
+  `;
+
+  // Opinions
+  const opinions = responses.filter(r => r.opinion && r.opinion.trim());
+  if (opinions.length > 0) {
+    document.getElementById('opinions-section').style.display = 'block';
+    document.getElementById('opinions-count').textContent = opinions.length + ' reader opinion' + (opinions.length !== 1 ? 's' : '');
+    document.getElementById('opinions-feed').innerHTML = opinions.slice().reverse().map(r => `
+      <div class="opinion-card">
+        <div class="opinion-card-meta">${r.name || 'Anonymous'} · ${formatDate(r.timestamp)}</div>
+        ${escapeHtml(r.opinion)}
+      </div>
+    `).join('');
+  }
+}
+
+function tally(responses, field) {
+  const counts = {};
+  responses.forEach(r => {
+    const v = r[field] || '—';
+    counts[v] = (counts[v] || 0) + 1;
+  });
+  return Object.entries(counts).sort((a,b) => b[1]-a[1]);
+}
+
+function renderBars(entries, total, colorClasses) {
+  return entries.map(([label, count], i) => {
+    const pct = Math.round((count / total) * 100);
+    const cls = colorClasses[i] || 'navy';
+    return `
+      <div class="result-bar-row">
+        <div class="result-bar-label">
+          <span>${label}</span>
+          <span>${pct}% (${count})</span>
+        </div>
+        <div class="result-bar-track">
+          <div class="result-bar-fill ${cls}" style="width:${pct}%"></div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function formatDate(ts) {
+  if (!ts) return '';
+  try {
+    return new Date(ts).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' });
+  } catch(e) { return ''; }
+}
+
+function escapeHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// Load results on page load
+window.addEventListener('DOMContentLoaded', () => {
+  loadResults();
+  // Refresh every 60 seconds
+  setInterval(loadResults, 60000);
+});
+</script>
+
+</body>
+</html>
