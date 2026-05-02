@@ -1045,18 +1045,22 @@
     </div>
   </div>
   <div style="text-align:center;margin:40px 0;">
+
+    <div style="text-align:center;margin:40px 0;">
   <button onclick="submitSurvey()" style="
-    padding:12px 24px;
+    padding:14px 28px;
     background:#162D52;
     color:#fff;
     border:none;
     border-radius:6px;
     font-family:'DM Mono',monospace;
-    cursor:pointer;">
+    cursor:pointer;
+    font-size:12px;
+    letter-spacing:1px;">
     Submit Responses
   </button>
 </div>
-
+  
   <!-- SUMMARY CARD -->
   <div class="summary-card" id="summary-card">
     <div class="summary-header">
@@ -1190,7 +1194,27 @@ function submitSurvey() {
     alert("Error submitting response.");
   });
 }
-  
+  function submitSurvey() {
+  if (Object.keys(answers).length < TOTAL_Q) {
+    alert("Please answer all questions before submitting.");
+    return;
+  }
+
+  const url = new URL("https://docs.google.com/forms/d/e/1FAIpQLSf.../viewform");
+
+  url.searchParams.append("entry.23168775", answers[1] || "");
+  url.searchParams.append("entry.1017842863", answers[2] || "");
+  url.searchParams.append("entry.1129239367", answers[3] || "");
+  url.searchParams.append("entry.250705661", answers[4] || "");
+  url.searchParams.append("entry.1865168674", answers[5] || "");
+  url.searchParams.append("entry.1633950077", answers[6] || "");
+  url.searchParams.append("entry.345785482", answers[7] || "");
+  url.searchParams.append("entry.986841804", answers[8] || "");
+  url.searchParams.append("entry.805402792", answers[9] || "");
+  url.searchParams.append("entry.1351937527", "anonymous");
+
+  window.open(url.toString(), "_blank");
+}
 </script>
 </body>
 </html>
