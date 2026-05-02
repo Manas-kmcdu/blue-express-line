@@ -1047,6 +1047,18 @@
     </div>
   </div>
 
+  <!-- SUMMARY CARD -->
+  <div class="summary-card" id="summary-card">
+    <div class="summary-header">
+      <div>
+        <div class="summary-header-title">Your Survey Responses</div>
+        <div class="summary-header-sub">A summary of your views on the Blue Line Express</div>
+      </div>
+    </div>
+    <div class="summary-body" id="summary-body">
+      <!-- populated by JS -->
+    </div>
+  </div>
 
   <!-- BACK COVER -->
   <div class="back-cover">
@@ -1063,6 +1075,89 @@
 </div><!-- /shell -->
 
 <script>
+// ─── STATE ───
+const TOTAL_Q = 10;
+const answers = {}; // { 1: 'answer text', ... }
+
+const questions = [
+  "How often do you travel end-to-end on the Blue Line?",
+  "Which best describes your nearest Blue Line station?",
+  "What matters more: speed or frequency?",
+  "Does the CBTC software-only change increase your confidence?",
+  "Which scenario would you choose?",
+  "Does the financial case (₹50–150 Cr capex, ₹3,250M NPV) seem compelling?",
+  "How important is the environmental benefit to your view?",
+  "Does global precedent (NYC, Shanghai) increase your confidence?",
+  "Would you want Delhi to eventually move to a Tokyo-style multi-tier system?",
+  "Your overall verdict on the Blue Line Express?"
+];
+
+function countAnswered() {
+  return Object.keys(answers).length;
+}
+
+function updateProgress() {
+  const n = countAnswered();
+  // Update all progress indicators
+  for (let i = 1; i <= TOTAL_Q; i++) {
+    const el = document.getElementById('sq-progress-' + i);
+    if (el) el.textContent = n + ' / ' + TOTAL_Q + ' answered';
+  }
+}
+
+function answer(qNum, value, el) {
+  // Already answered - allow change
+  const card = document.getElementById('sq-' + qNum);
+  // Clear existing selection in this card
+  card.querySelectorAll('.survey-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  answers[qNum] = value;
+  card.classList.add('answered');
+  updateProgress();
+  updateSummary();
+}
+
+// ─── SCROLL REVEAL ───
+const observerOptions = { root: null, rootMargin: '0px 0px -80px 0px', threshold: 0.1 };
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, observerOptions);
+
+document.querySelectorAll('.survey-card, .summary-card').forEach(el => observer.observe(el));
+
+// ─── SUMMARY ───
+function updateSummary() {
+  const n = countAnswered();
+  const body = document.getElementById('summary-body');
+  let html = '';
+
+  for (let i = 1; i <= TOTAL_Q; i++) {
+    const a = answers[i];
+    html += `
+      <div class="summary-item">
+        <div class="summary-item-num">${i}</div>
+        <div class="summary-item-content">
+          <div class="summary-item-q">${questions[i-1]}</div>
+          ${a
+            ? `<div class="summary-item-a">${a}</div>`
+            : `<div class="summary-item-a unanswered">Not answered yet - scroll up to respond</div>`
+          }
+        </div>
+      </div>`;
+  }
+
+  if (n < TOTAL_Q) {
+    html += `<div class="summary-unanswered-note">${TOTAL_Q - n} question${TOTAL_Q - n !== 1 ? 's' : ''} still unanswered - keep scrolling through the report to find them.</div>`;
+  } else {
+    html += `<div style="text-align:center;margin-top:20px;"><div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--navy);margin-bottom:6px;">All 10 questions answered!</div><div style="font-size:12px;color:var(--gray-400);">Thank you for sharing your perspective on the Blue Line Express.</div><div class="summary-badge" style="margin-top:8px;">✓ COMPLETE</div></div>`;
+  }
+
+  body.innerHTML = html;
+}
 
 // Init summary on load
 updateSummary();
