@@ -706,92 +706,183 @@
         <div style="margin-top:10px;font-size:11px;color:var(--gray-700);">Only 1 min better than B. Significant equity risk. Not recommended for initial rollout.</div>
       </div>
       <!-- SCENARIO D - insert after existing .three-col cards, before closing </div> of #p-scenarios -->
-<!-- SCENARIO D -->
-<div style="margin-top:18px;border-top:1px solid #EEF2F7;padding-top:14px;">
-  <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:#805AD5;margin-bottom:8px;">Scenario D — Interleaved Express Pair <span class="badge" style="background:#805AD5;font-size:7.5px;">SYSTEM APPROACH</span></div>
+<!-- SCENARIOS PAGE -->
+<div class="page inner" id="p-scenarios">
+  <div class="page-header"><span class="page-header-title">Express Scenarios &amp; Time Savings</span><span class="page-num">p. 4</span></div>
+  <p style="margin-bottom:12px;">Three skip-stop configurations modelled. All assume max speed ~80 km/h, acceleration 1 m/s², 30-sec dwell per served stop.</p>
 
-  <!-- TOP ROW: diagram + stats side by side -->
-  <div style="display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start;">
-
-    <!-- Diagram -->
-    <div class="route-wrap" style="padding:10px 14px 8px;">
-      <div class="route-wrap-label">Alternating-stop pattern — Train α &amp; Train β</div>
-      <svg viewBox="0 0 560 62" xmlns="http://www.w3.org/2000/svg" style="width:100%;margin-top:4px;">
-        <line x1="30" y1="28" x2="530" y2="28" stroke="#D1DCE8" stroke-width="2"/>
-        <!-- stops -->
-        <circle cx="30"  cy="28" r="5" fill="#0D1F3C"/><text x="30"  y="46" font-family="DM Mono,monospace" font-size="7" fill="#0D1F3C" text-anchor="middle">S1</text>
-        <circle cx="85"  cy="28" r="5" fill="#E63946"/><text x="85"  y="46" font-family="DM Mono,monospace" font-size="7" fill="#E63946" text-anchor="middle">S2</text>
-        <circle cx="140" cy="28" r="5" fill="#0D1F3C"/><text x="140" y="46" font-family="DM Mono,monospace" font-size="7" fill="#0D1F3C" text-anchor="middle">S3</text>
-        <circle cx="195" cy="28" r="5" fill="#E63946"/><text x="195" y="46" font-family="DM Mono,monospace" font-size="7" fill="#E63946" text-anchor="middle">S4</text>
-        <circle cx="250" cy="28" r="5" fill="#0D1F3C"/><text x="250" y="46" font-family="DM Mono,monospace" font-size="7" fill="#0D1F3C" text-anchor="middle">S5</text>
-        <circle cx="305" cy="28" r="5" fill="#E63946"/><text x="305" y="46" font-family="DM Mono,monospace" font-size="7" fill="#E63946" text-anchor="middle">S6</text>
-        <circle cx="360" cy="28" r="5" fill="#0D1F3C"/><text x="360" y="46" font-family="DM Mono,monospace" font-size="7" fill="#0D1F3C" text-anchor="middle">S7</text>
-        <circle cx="415" cy="28" r="5" fill="#E63946"/><text x="415" y="46" font-family="DM Mono,monospace" font-size="7" fill="#E63946" text-anchor="middle">S8</text>
-        <circle cx="470" cy="28" r="5" fill="#0D1F3C"/><text x="470" y="46" font-family="DM Mono,monospace" font-size="7" fill="#0D1F3C" text-anchor="middle">S9</text>
-        <circle cx="530" cy="28" r="5" fill="#E63946"/><text x="530" y="46" font-family="DM Mono,monospace" font-size="7" fill="#E63946" text-anchor="middle">S10</text>
-        <!-- α arcs above: S1→S3→S5→S7→S9 -->
-        <path d="M30,23  Q85,5  140,23" fill="none" stroke="#0D1F3C" stroke-width="1.8" stroke-dasharray="4,2"/>
-        <path d="M140,23 Q195,5 250,23" fill="none" stroke="#0D1F3C" stroke-width="1.8" stroke-dasharray="4,2"/>
-        <path d="M250,23 Q305,5 360,23" fill="none" stroke="#0D1F3C" stroke-width="1.8" stroke-dasharray="4,2"/>
-        <path d="M360,23 Q415,5 470,23" fill="none" stroke="#0D1F3C" stroke-width="1.8" stroke-dasharray="4,2"/>
-        <!-- β arcs below: S2→S4→S6→S8→S10 -->
-        <path d="M85,33  Q140,51 195,33" fill="none" stroke="#E63946" stroke-width="1.8" stroke-dasharray="4,2"/>
-        <path d="M195,33 Q250,51 305,33" fill="none" stroke="#E63946" stroke-width="1.8" stroke-dasharray="4,2"/>
-        <path d="M305,33 Q360,51 415,33" fill="none" stroke="#E63946" stroke-width="1.8" stroke-dasharray="4,2"/>
-        <path d="M415,33 Q470,51 530,33" fill="none" stroke="#E63946" stroke-width="1.8" stroke-dasharray="4,2"/>
-        <!-- legend -->
-        <circle cx="30"  cy="58" r="3.5" fill="#0D1F3C"/><text x="37"  y="61" font-family="DM Sans,sans-serif" font-size="7.5" fill="#0D1F3C">Train α — odd stops</text>
-        <circle cx="175" cy="58" r="3.5" fill="#E63946"/><text x="182" y="61" font-family="DM Sans,sans-serif" font-size="7.5" fill="#E63946">Train β — even stops</text>
-        <text x="360" y="61" font-family="DM Mono,monospace" font-size="7" fill="#7A93B0">Together: 100% coverage</text>
-      </svg>
-    </div>
-
-    <!-- Stats -->
-    <div style="font-size:11px;min-width:148px;">
-      <div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--navy);line-height:1;">25+25 <span style="font-size:12px;font-weight:400;">stops</span></div>
-      <div style="font-size:10px;color:var(--gray-400);margin-bottom:7px;">Each train skips 25 of 50</div>
-      <table style="font-size:10.5px;margin:0;width:100%;">
-        <tr><td style="padding:2px 0;color:var(--gray-400);">Journey time</td><td style="padding:2px 0;font-weight:600;color:var(--navy);text-align:right;">~61 min</td></tr>
-        <tr><td style="padding:2px 0;color:var(--gray-400);">Time saved</td><td style="padding:2px 0;font-weight:600;color:#E63946;text-align:right;">−24 min</td></tr>
-        <tr><td style="padding:2px 0;color:var(--gray-400);">Max wait</td><td style="padding:2px 0;font-weight:600;color:var(--navy);text-align:right;">½ headway</td></tr>
-        <tr><td style="padding:2px 0;color:var(--gray-400);">Scheduling</td><td style="padding:2px 0;font-weight:600;color:#38A169;text-align:right;">Minimal</td></tr>
-      </table>
-    </div>
+  <!-- ── CHART ── -->
+  <div class="route-wrap" style="padding:14px 18px 10px;">
+    <div class="route-wrap-label">End-to-end journey time — Dwarka Sec 21 → Noida EC</div>
+    <svg viewBox="0 0 560 155" xmlns="http://www.w3.org/2000/svg" style="width:100%;">
+      <line x1="60" y1="8" x2="60" y2="128" stroke="#D1DCE8" stroke-width="1"/>
+      <line x1="60" y1="128" x2="545" y2="128" stroke="#D1DCE8" stroke-width="1"/>
+      <line x1="60" y1="96"  x2="545" y2="96"  stroke="#EEF2F7" stroke-width="1" stroke-dasharray="3,3"/>
+      <line x1="60" y1="64"  x2="545" y2="64"  stroke="#EEF2F7" stroke-width="1" stroke-dasharray="3,3"/>
+      <line x1="60" y1="32"  x2="545" y2="32"  stroke="#EEF2F7" stroke-width="1" stroke-dasharray="3,3"/>
+      <line x1="60" y1="8"   x2="545" y2="8"   stroke="#EEF2F7" stroke-width="1" stroke-dasharray="3,3"/>
+      <text x="54" y="132" font-family="DM Mono,monospace" font-size="8" fill="#7A93B0" text-anchor="end">0</text>
+      <text x="54" y="100" font-family="DM Mono,monospace" font-size="8" fill="#7A93B0" text-anchor="end">20</text>
+      <text x="54" y="68"  font-family="DM Mono,monospace" font-size="8" fill="#7A93B0" text-anchor="end">40</text>
+      <text x="54" y="36"  font-family="DM Mono,monospace" font-size="8" fill="#7A93B0" text-anchor="end">60</text>
+      <text x="54" y="12"  font-family="DM Mono,monospace" font-size="8" fill="#7A93B0" text-anchor="end">80 min</text>
+      <rect x="80"  y="1"  width="60" height="127" fill="#0D1F3C" rx="2"/>
+      <text x="110" y="0" font-family="DM Mono,monospace" font-size="9" fill="#0D1F3C" text-anchor="middle" font-weight="700">85 min</text>
+      <rect x="175" y="29" width="60" height="99" fill="#2B6CB0" rx="2"/>
+      <text x="205" y="25" font-family="DM Mono,monospace" font-size="9" fill="#2B6CB0" text-anchor="middle" font-weight="700">66 min</text>
+      <rect x="175" y="1"  width="60" height="28" fill="none" stroke="#2B6CB0" stroke-width="1" stroke-dasharray="3,2" rx="1"/>
+      <text x="240" y="14" font-family="DM Mono,monospace" font-size="8" fill="#E63946" font-weight="700">−19 min</text>
+      <rect x="270" y="37" width="60" height="91" fill="#4A9FD4" rx="2"/>
+      <text x="300" y="33" font-family="DM Mono,monospace" font-size="9" fill="#4A9FD4" text-anchor="middle" font-weight="700">61 min</text>
+      <rect x="270" y="1"  width="60" height="36" fill="none" stroke="#4A9FD4" stroke-width="1" stroke-dasharray="3,2" rx="1"/>
+      <text x="335" y="18" font-family="DM Mono,monospace" font-size="8" fill="#E63946" font-weight="700">−24 min</text>
+      <rect x="365" y="38" width="60" height="90" fill="#E63946" rx="2"/>
+      <text x="395" y="34" font-family="DM Mono,monospace" font-size="9" fill="#E63946" text-anchor="middle" font-weight="700">60 min</text>
+      <rect x="365" y="1"  width="60" height="37" fill="none" stroke="#E63946" stroke-width="1" stroke-dasharray="3,2" rx="1"/>
+      <text x="430" y="18" font-family="DM Mono,monospace" font-size="8" fill="#E63946" font-weight="700">−25 min</text>
+      <rect x="460" y="37" width="60" height="91" fill="#805AD5" rx="2"/>
+      <text x="490" y="33" font-family="DM Mono,monospace" font-size="9" fill="#805AD5" text-anchor="middle" font-weight="700">61 min</text>
+      <rect x="460" y="1"  width="60" height="36" fill="none" stroke="#805AD5" stroke-width="1" stroke-dasharray="3,2" rx="1"/>
+      <text x="525" y="18" font-family="DM Mono,monospace" font-size="8" fill="#805AD5" font-weight="700">−24 min</text>
+      <text x="110" y="142" font-family="DM Sans,sans-serif" font-size="9" fill="#334155" text-anchor="middle">Local</text>
+      <text x="110" y="151" font-family="DM Mono,monospace" font-size="8" fill="#7A93B0" text-anchor="middle">50 stops</text>
+      <text x="205" y="142" font-family="DM Sans,sans-serif" font-size="9" fill="#334155" text-anchor="middle">Scenario A</text>
+      <text x="205" y="151" font-family="DM Mono,monospace" font-size="8" fill="#7A93B0" text-anchor="middle">30 stops</text>
+      <text x="300" y="142" font-family="DM Sans,sans-serif" font-size="9" fill="#334155" text-anchor="middle">Scenario B ★</text>
+      <text x="300" y="151" font-family="DM Mono,monospace" font-size="8" fill="#4A9FD4" text-anchor="middle">25 stops</text>
+      <text x="395" y="142" font-family="DM Sans,sans-serif" font-size="9" fill="#334155" text-anchor="middle">Scenario C</text>
+      <text x="395" y="151" font-family="DM Mono,monospace" font-size="8" fill="#7A93B0" text-anchor="middle">20 stops</text>
+      <text x="490" y="142" font-family="DM Sans,sans-serif" font-size="9" fill="#334155" text-anchor="middle">Scenario D</text>
+      <text x="490" y="151" font-family="DM Mono,monospace" font-size="8" fill="#805AD5" text-anchor="middle">25+25 stops</text>
+    </svg>
   </div>
 
-  <!-- BOTTOM ROW: mechanics + precedent side by side -->
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px;">
-    <div style="background:#F8FAFC;border-radius:6px;padding:10px 12px;font-size:10.5px;">
-      <div style="font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;text-transform:uppercase;color:#805AD5;margin-bottom:5px;">Why scheduling is easy</div>
-      <ul style="margin:0;padding-left:13px;color:var(--gray-700);line-height:1.65;">
-        <li>Complementary skip-sets → identical run distance</li>
-        <li>Equal distance → equal time → no catch-up conflicts</li>
-        <li>Dispatch β right after α; gap holds automatically</li>
-        <li>One headway controls the pair as a single unit</li>
-      </ul>
-    </div>
-    <div style="background:#F8FAFC;border-radius:6px;padding:10px 12px;font-size:10.5px;">
-      <div style="font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;text-transform:uppercase;color:#805AD5;margin-bottom:5px;">Precedent — in use today</div>
-      <ul style="margin:0;padding-left:13px;color:var(--gray-700);line-height:1.65;">
-        <li><strong>NYC Subway</strong> — IND skip-stop A/C pattern since 1932</li>
-        <li><strong>Chicago 'L'</strong> — Purple/Brown Line North Main skip-stop</li>
-        <li><strong>Tokyo Chūō</strong> — Rapid + Local interleaved, same headway</li>
-        <li><strong>Madrid Line 12</strong> — MetroSur alternating service</li>
-      </ul>
-    </div>
-  </div>
+  <!-- ── SCENARIO TILES ── -->
+  <div style="display:flex;flex-direction:column;gap:6px;margin-top:12px;">
 
-  <div class="note" style="margin-top:10px;border-left-color:#805AD5;"><strong>Equity win:</strong> Unlike Scenario C, zero stations are abandoned.Every rider gets express speed - directly, or one same-platform interchange to complementary service.</div>
-</div>
+    <!-- TILE A -->
+    <div style="display:grid;grid-template-columns:3px 110px 1fr;gap:0;align-items:stretch;background:#fff;border:1px solid #E8EEF4;border-radius:6px;overflow:hidden;">
+      <div style="background:#2B6CB0;"></div>
+      <div style="padding:8px 12px;border-right:1px solid #EEF2F7;">
+        <div style="font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1.2px;text-transform:uppercase;color:#7A93B0;">Scenario A</div>
+        <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--navy);line-height:1.1;">30 <span style="font-size:11px;font-weight:400;color:#7A93B0;">stops</span></div>
+        <div style="font-size:9.5px;color:#7A93B0;">Skips 20 of 50</div>
+      </div>
+      <div style="padding:8px 14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <span style="font-size:10px;background:#EEF2F7;border-radius:4px;padding:3px 7px;color:var(--navy);font-weight:600;white-space:nowrap;">66 min</span>
+        <span style="font-size:10px;background:#FEE2E2;border-radius:4px;padding:3px 7px;color:#C53030;font-weight:600;white-space:nowrap;">−19 min</span>
+        <span style="font-size:10px;background:#EEF2F7;border-radius:4px;padding:3px 7px;color:var(--navy);font-weight:600;white-space:nowrap;">22% faster</span>
+        <span style="font-size:10px;color:#64748B;">Lowest disruption. Conservative. Diminished time benefit vs. cost.</span>
+      </div>
     </div>
-    <div class="note" style="margin-top:12px;"><strong>Diminishing returns:</strong> 50→30 stops saves 19 min. 30→25 saves 5 more. 25→20 saves only 1 additional minute. Scenario B captures 96% of max possible saving.</div>
-  </div>
 
-  <!-- SURVEY Q5 -->
-  <div class="survey-card" id="sq-5" data-q="5">
+    <!-- TILE B -->
+    <div style="display:grid;grid-template-columns:3px 110px 1fr;gap:0;align-items:stretch;background:#F0F7FF;border:1px solid #BFD7F0;border-radius:6px;overflow:hidden;">
+      <div style="background:#4A9FD4;"></div>
+      <div style="padding:8px 12px;border-right:1px solid #BFD7F0;">
+        <div style="font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1.2px;text-transform:uppercase;color:#2B6CB0;">Scenario B <span style="background:#2B6CB0;color:#fff;border-radius:3px;padding:1px 4px;font-size:7px;letter-spacing:.5px;">★ REC</span></div>
+        <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--navy);line-height:1.1;">25 <span style="font-size:11px;font-weight:400;color:#7A93B0;">stops</span></div>
+        <div style="font-size:9.5px;color:#7A93B0;">Skips 25 of 50</div>
+      </div>
+      <div style="padding:8px 14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <span style="font-size:10px;background:#DBEAFE;border-radius:4px;padding:3px 7px;color:#1E40AF;font-weight:600;white-space:nowrap;">61 min</span>
+        <span style="font-size:10px;background:#FEE2E2;border-radius:4px;padding:3px 7px;color:#C53030;font-weight:600;white-space:nowrap;">−24 min</span>
+        <span style="font-size:10px;background:#DBEAFE;border-radius:4px;padding:3px 7px;color:#1E40AF;font-weight:600;white-space:nowrap;">28% faster</span>
+        <span style="font-size:10px;color:#64748B;">Best tradeoff. Serves all major interchange hubs. Captures 96% of max saving.</span>
+      </div>
     </div>
-    <div class="note" style="margin-top:12px;"><strong>Diminishing returns:</strong> 50→30 stops saves 19 min. 30→25 saves 5 more. 25→20 saves only 1 additional minute. Scenario B captures 96% of max possible saving.</div>
-  </div>
+
+    <!-- TILE C -->
+    <div style="display:grid;grid-template-columns:3px 110px 1fr;gap:0;align-items:stretch;background:#fff;border:1px solid #E8EEF4;border-radius:6px;overflow:hidden;">
+      <div style="background:#E63946;"></div>
+      <div style="padding:8px 12px;border-right:1px solid #EEF2F7;">
+        <div style="font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1.2px;text-transform:uppercase;color:#E63946;">Scenario C — Ultra</div>
+        <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--navy);line-height:1.1;">20 <span style="font-size:11px;font-weight:400;color:#7A93B0;">stops</span></div>
+        <div style="font-size:9.5px;color:#7A93B0;">Skips 30 of 50</div>
+      </div>
+      <div style="padding:8px 14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <span style="font-size:10px;background:#EEF2F7;border-radius:4px;padding:3px 7px;color:var(--navy);font-weight:600;white-space:nowrap;">60 min</span>
+        <span style="font-size:10px;background:#FEE2E2;border-radius:4px;padding:3px 7px;color:#C53030;font-weight:600;white-space:nowrap;">−25 min</span>
+        <span style="font-size:10px;background:#EEF2F7;border-radius:4px;padding:3px 7px;color:var(--navy);font-weight:600;white-space:nowrap;">29% faster</span>
+        <span style="font-size:10px;color:#64748B;">Only 1 min better than B. Significant equity risk. Not recommended for initial rollout.</span>
+      </div>
+    </div>
+
+    <!-- TILE D — two-row tile -->
+    <div style="background:#FAF7FF;border:1px solid #D6C8F5;border-radius:6px;overflow:hidden;">
+      <!-- top strip -->
+      <div style="display:grid;grid-template-columns:3px 110px 1fr;gap:0;align-items:stretch;">
+        <div style="background:#805AD5;"></div>
+        <div style="padding:8px 12px;border-right:1px solid #D6C8F5;">
+          <div style="font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1.2px;text-transform:uppercase;color:#805AD5;">Scenario D <span style="background:#805AD5;color:#fff;border-radius:3px;padding:1px 4px;font-size:7px;letter-spacing:.5px;">SYSTEM</span></div>
+          <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--navy);line-height:1.1;">25+25 <span style="font-size:11px;font-weight:400;color:#7A93B0;">stops</span></div>
+          <div style="font-size:9.5px;color:#7A93B0;">α odd + β even = 100%</div>
+        </div>
+        <div style="padding:8px 14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <span style="font-size:10px;background:#EDE9FE;border-radius:4px;padding:3px 7px;color:#5B21B6;font-weight:600;white-space:nowrap;">~61 min</span>
+          <span style="font-size:10px;background:#FEE2E2;border-radius:4px;padding:3px 7px;color:#C53030;font-weight:600;white-space:nowrap;">−24 min</span>
+          <span style="font-size:10px;background:#EDE9FE;border-radius:4px;padding:3px 7px;color:#5B21B6;font-weight:600;white-space:nowrap;">28% faster</span>
+          <span style="font-size:10px;background:#DCFCE7;border-radius:4px;padding:3px 7px;color:#166534;font-weight:600;white-space:nowrap;">100% coverage</span>
+          <span style="font-size:10px;background:#DCFCE7;border-radius:4px;padding:3px 7px;color:#166534;font-weight:600;white-space:nowrap;">Minimal scheduling</span>
+          <span style="font-size:10px;color:#64748B;">Equal run times → consecutive dispatch. Zero stations skipped. No equity tradeoff.</span>
+        </div>
+      </div>
+      <!-- bottom strip: diagram | scheduling | precedent -->
+      <div style="display:grid;grid-template-columns:1fr 170px 170px;border-top:1px solid #D6C8F5;">
+        <div style="padding:8px 14px 6px;">
+          <div style="font-family:'DM Mono',monospace;font-size:7.5px;letter-spacing:1px;text-transform:uppercase;color:#805AD5;margin-bottom:4px;">Alternating-stop pattern — Train α &amp; Train β</div>
+          <svg viewBox="0 0 560 58" xmlns="http://www.w3.org/2000/svg" style="width:100%;">
+            <line x1="30" y1="22" x2="530" y2="22" stroke="#D1DCE8" stroke-width="2"/>
+            <circle cx="30"  cy="22" r="5" fill="#0D1F3C"/><text x="30"  y="38" font-family="DM Mono,monospace" font-size="7" fill="#0D1F3C" text-anchor="middle">S1</text>
+            <circle cx="85"  cy="22" r="5" fill="#E63946"/><text x="85"  y="38" font-family="DM Mono,monospace" font-size="7" fill="#E63946" text-anchor="middle">S2</text>
+            <circle cx="140" cy="22" r="5" fill="#0D1F3C"/><text x="140" y="38" font-family="DM Mono,monospace" font-size="7" fill="#0D1F3C" text-anchor="middle">S3</text>
+            <circle cx="195" cy="22" r="5" fill="#E63946"/><text x="195" y="38" font-family="DM Mono,monospace" font-size="7" fill="#E63946" text-anchor="middle">S4</text>
+            <circle cx="250" cy="22" r="5" fill="#0D1F3C"/><text x="250" y="38" font-family="DM Mono,monospace" font-size="7" fill="#0D1F3C" text-anchor="middle">S5</text>
+            <circle cx="305" cy="22" r="5" fill="#E63946"/><text x="305" y="38" font-family="DM Mono,monospace" font-size="7" fill="#E63946" text-anchor="middle">S6</text>
+            <circle cx="360" cy="22" r="5" fill="#0D1F3C"/><text x="360" y="38" font-family="DM Mono,monospace" font-size="7" fill="#0D1F3C" text-anchor="middle">S7</text>
+            <circle cx="415" cy="22" r="5" fill="#E63946"/><text x="415" y="38" font-family="DM Mono,monospace" font-size="7" fill="#E63946" text-anchor="middle">S8</text>
+            <circle cx="470" cy="22" r="5" fill="#0D1F3C"/><text x="470" y="38" font-family="DM Mono,monospace" font-size="7" fill="#0D1F3C" text-anchor="middle">S9</text>
+            <circle cx="530" cy="22" r="5" fill="#E63946"/><text x="530" y="38" font-family="DM Mono,monospace" font-size="7" fill="#E63946" text-anchor="middle">S10</text>
+            <path d="M30,17  Q85,1  140,17"  fill="none" stroke="#0D1F3C" stroke-width="1.8" stroke-dasharray="4,2"/>
+            <path d="M140,17 Q195,1 250,17"  fill="none" stroke="#0D1F3C" stroke-width="1.8" stroke-dasharray="4,2"/>
+            <path d="M250,17 Q305,1 360,17"  fill="none" stroke="#0D1F3C" stroke-width="1.8" stroke-dasharray="4,2"/>
+            <path d="M360,17 Q415,1 470,17"  fill="none" stroke="#0D1F3C" stroke-width="1.8" stroke-dasharray="4,2"/>
+            <path d="M85,27  Q140,45 195,27"  fill="none" stroke="#E63946" stroke-width="1.8" stroke-dasharray="4,2"/>
+            <path d="M195,27 Q250,45 305,27"  fill="none" stroke="#E63946" stroke-width="1.8" stroke-dasharray="4,2"/>
+            <path d="M305,27 Q360,45 415,27"  fill="none" stroke="#E63946" stroke-width="1.8" stroke-dasharray="4,2"/>
+            <path d="M415,27 Q470,45 530,27"  fill="none" stroke="#E63946" stroke-width="1.8" stroke-dasharray="4,2"/>
+            <circle cx="30"  cy="54" r="3" fill="#0D1F3C"/><text x="37"  y="57" font-family="DM Sans,sans-serif" font-size="7" fill="#0D1F3C">Train α — odd stops</text>
+            <circle cx="175" cy="54" r="3" fill="#E63946"/><text x="182" y="57" font-family="DM Sans,sans-serif" font-size="7" fill="#E63946">Train β — even stops</text>
+            <text x="355" y="57" font-family="DM Mono,monospace" font-size="6.5" fill="#7A93B0">Together: 100% coverage</text>
+          </svg>
+        </div>
+        <div style="padding:8px 10px;border-left:1px solid #D6C8F5;">
+          <div style="font-family:'DM Mono',monospace;font-size:7.5px;letter-spacing:1px;text-transform:uppercase;color:#805AD5;margin-bottom:4px;">Why scheduling is easy</div>
+          <ul style="margin:0;padding-left:11px;font-size:9.5px;color:var(--gray-700);line-height:1.6;">
+            <li>Complementary skip-sets → same run distance</li>
+            <li>Equal distance → equal time → no conflicts</li>
+            <li>Dispatch β after α; gap self-maintains</li>
+            <li>One headway controls the pair</li>
+          </ul>
+        </div>
+        <div style="padding:8px 10px;border-left:1px solid #D6C8F5;">
+          <div style="font-family:'DM Mono',monospace;font-size:7.5px;letter-spacing:1px;text-transform:uppercase;color:#805AD5;margin-bottom:4px;">Precedent — in use today</div>
+          <ul style="margin:0;padding-left:11px;font-size:9.5px;color:var(--gray-700);line-height:1.6;">
+            <li><strong>NYC Subway</strong> — IND skip-stop since 1932</li>
+            <li><strong>Chicago 'L'</strong> — North Main skip-stop</li>
+            <li><strong>Tokyo Chūō</strong> — Rapid + Local interleaved</li>
+            <li><strong>Madrid Line 12</strong> — MetroSur alternating</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /tiles -->
+
+  <div class="note" style="margin-top:10px;"><strong>Diminishing returns:</strong> 50→30 stops saves 19 min. 30→25 saves 5 more. 25→20 saves only 1 min. Scenario B captures 96% of max saving. Scenario D matches B's time with full 100% coverage.</div>
+
+</div><!-- /p-scenarios -->
+
 
   <!-- SURVEY Q5 -->
   <div class="survey-card" id="sq-5" data-q="5">
